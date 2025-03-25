@@ -1,0 +1,59 @@
+{
+    "Administrador": [
+        "admin",
+        "edit",
+        "view_reports",
+        "manage_users",
+        "manage_animals",
+        "manage_reproduction",
+        "manage_health",
+        "manage_growth",
+        "export_data",
+        "import_data"
+    ],
+    "Desenvolvedor": [
+        "admin",
+        "edit",
+        "view_reports",
+        "manage_users",
+        "manage_animals",
+        "manage_reproduction",
+        "manage_health",
+        "manage_growth",
+        "export_data",
+        "import_data",
+        "developer_tools",
+        "system_config"
+    ],
+    "Gerente": [
+        "admin",
+        "edit",
+        "view_reports",
+        "manage_users",
+        "manage_animals",
+        "manage_reproduction",
+        "manage_health",
+        "manage_growth",
+        "export_data",
+        "import_data"
+    ],
+    "T\u00e9cnico": [
+        "edit",
+        "view_reports",
+        "manage_animals",
+        "manage_reproduction",
+        "manage_health",
+        "manage_growth"
+    ],
+    "Operador": [
+        "edit",
+        "view_reports",
+        "manage_animals",
+        "manage_reproduction",
+        "manage_health",
+        "manage_growth"
+    ],
+    "Visitante": [
+        "view_reports"
+    ]
+}
