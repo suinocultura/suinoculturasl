@@ -1,0 +1,273 @@
+{
+    "versoes": [
+        {
+            "versao": "2.1.0",
+            "data": "2025-03-24",
+            "autor": "Equipe de Desenvolvimento",
+            "descricao": "Aprimoramentos na integração com GitHub e no sistema de registro de atualizações",
+            "codigo_interno": "RELEASE-SUINO-2025-03B",
+            "impacto": "Médio",
+            "equipe_responsavel": "Desenvolvimento Full-Stack",
+            "notas_importantes": "⚠️ Esta versão requer tokens GitHub com permissão completa para o escopo 'repo'. Verifique a documentação para mais detalhes.",
+            "mudancas": [
+                {
+                    "tipo": "Nova Funcionalidade",
+                    "titulo": "Sistema de Notas Importantes em Atualizações",
+                    "descricao": "Adicionado suporte para notas importantes em atualizações, que são exibidas de forma destacada no histórico.",
+                    "detalhes_tecnicos": "Implementada estrutura JSON estendida para incluir o campo 'notas_importantes', com estilização personalizada usando CSS para exibição em formato de alerta com fundo amarelo e borda lateral.",
+                    "arquivos_alterados": [
+                        "pages/98_🛠️_Sistema_Desenvolvedor.py",
+                        "data/updates_history.json"
+                    ],
+                    "horas_desenvolvimento": 8,
+                    "testes_realizados": "Testes de exibição em diferentes navegadores e validação de formatação HTML/CSS."
+                },
+                {
+                    "tipo": "Melhoria",
+                    "titulo": "Personalização de Notas em Atualizações Automáticas GitHub",
+                    "descricao": "Adicionada opção para personalizar as notas importantes nas atualizações registradas automaticamente durante envios ao GitHub.",
+                    "detalhes_tecnicos": "Estendida a função registrar_atualizacao_automatica para aceitar um parâmetro opcional de notas importantes, e adicionada interface de usuário para inserção de notas durante o envio para GitHub.",
+                    "arquivos_alterados": [
+                        "pages/98_🛠️_Sistema_Desenvolvedor.py"
+                    ],
+                    "horas_desenvolvimento": 6,
+                    "testes_realizados": "Testes de integração com o sistema de GitHub e validação do fluxo de usuário."
+                },
+                {
+                    "tipo": "Melhoria",
+                    "titulo": "Instruções Detalhadas para Tokens GitHub",
+                    "descricao": "Adicionado aviso detalhado sobre as permissões necessárias para tokens do GitHub, a fim de evitar erros 403 (Forbidden).",
+                    "detalhes_tecnicos": "Implementado aviso destacado com explicações sobre as permissões necessárias para tokens classicos e tokens de acesso refinado (fine-grained tokens), com enfase na permissão 'repo' e 'Contents: Read and write'.",
+                    "arquivos_alterados": [
+                        "pages/98_🛠️_Sistema_Desenvolvedor.py"
+                    ],
+                    "horas_desenvolvimento": 4,
+                    "testes_realizados": "Validação da clareza das instruções com diferentes níveis de usuários."
+                },
+                {
+                    "tipo": "Melhoria", 
+                    "titulo": "Aprimoramento Visual das Notas no Histórico",
+                    "descricao": "Melhorada a exibição visual das notas importantes no histórico de atualizações, com estilo personalizado para chamar atenção.",
+                    "detalhes_tecnicos": "Criado estilo CSS personalizado para o container de notas importantes, com fundo amarelo claro (#FFF3CD), texto em tom âmbar escuro (#856404), borda arredondada e destaque lateral dourado para facilitar a identificação.",
+                    "arquivos_alterados": [
+                        "pages/98_🛠️_Sistema_Desenvolvedor.py"
+                    ],
+                    "horas_desenvolvimento": 3,
+                    "testes_realizados": "Testes de contraste, acessibilidade e visualização em diferentes tamanhos de tela."
+                }
+            ]
+        },
+        {
+            "versao": "2.0.0",
+            "data": "2025-03-23",
+            "autor": "Equipe de Desenvolvimento",
+            "descricao": "Atualização principal do sistema com novas funcionalidades e melhorias de segurança",
+            "codigo_interno": "RELEASE-SUINO-2025-03",
+            "impacto": "Alto",
+            "equipe_responsavel": "Desenvolvimento Full-Stack",
+            "mudancas": [
+                {
+                    "tipo": "Nova Funcionalidade",
+                    "titulo": "Sistema de Verificação de Permissões",
+                    "descricao": "Implementado sistema avançado de verificação de permissões por página, permitindo controle granular de acesso baseado no cargo do usuário.",
+                    "detalhes_tecnicos": "Implementado através de um sistema baseado em JSON que verifica permissões em tempo real, armazenando configurações em .streamlit/page_config/page_permissions.json e com integração completa com o sistema de autenticação existente.",
+                    "arquivos_alterados": [
+                        "check_page_permissions.py", 
+                        ".streamlit/page_config/page_permissions.json", 
+                        "add_permissions.py",
+                        "utils.py"
+                    ],
+                    "horas_desenvolvimento": 48,
+                    "testes_realizados": "Testes de integração com diferentes perfis de usuário e validação de restrições de acesso."
+                },
+                {
+                    "tipo": "Nova Funcionalidade",
+                    "titulo": "Configuração de Visibilidade de Páginas",
+                    "descricao": "Adicionada capacidade de configurar quais páginas são visíveis para cada tipo de usuário através de arquivos JSON de configuração.",
+                    "detalhes_tecnicos": "Sistema de visibilidade condicional implementado via arquivo .streamlit/page_config/visibility.json, com lógica de carregamento no início da aplicação e verificação dinâmica de permissões.",
+                    "arquivos_alterados": [
+                        ".streamlit/page_config/visibility.json",
+                        "app.py",
+                        "check_page_permissions.py"
+                    ],
+                    "horas_desenvolvimento": 24,
+                    "testes_realizados": "Testes de usabilidade com diferentes perfis de acesso e validação da interface adaptativa."
+                },
+                {
+                    "tipo": "Melhoria",
+                    "titulo": "Aplicativo Android Atualizado",
+                    "descricao": "Melhorias significativas no aplicativo Android, incluindo suporte offline, notificações e menu de navegação aprimorado.",
+                    "detalhes_tecnicos": "Implementação de SwipeRefreshLayout para atualização da página, criação de SuinoculturaApp.java para inicialização do Timber (logging), configuração de FileProvider para acesso seguro aos arquivos, e adição de menu principal com novas opções.",
+                    "arquivos_alterados": [
+                        "android_app_base/app/src/main/java/com/suinocultura/app/MainActivity.java",
+                        "android_app_base/app/src/main/java/com/suinocultura/app/SuinoculturaApp.java",
+                        "android_app_base/app/src/main/AndroidManifest.xml",
+                        "android_app_base/app/src/main/res/menu/main_menu.xml",
+                        "android_app_base/app/src/main/res/layout/activity_main.xml",
+                        "android_app_base/app/src/main/res/values/strings.xml"
+                    ],
+                    "horas_desenvolvimento": 40,
+                    "testes_realizados": "Testes em diferentes versões do Android, testes de conectividade intermitente, e validação do comportamento offline."
+                },
+                {
+                    "tipo": "Melhoria",
+                    "titulo": "Interface do Sistema Desenvolvedor",
+                    "descricao": "Aprimoramento da interface do Sistema Desenvolvedor com métricas em tempo real, novas ferramentas de diagnóstico e histórico de atualizações em modo escuro.",
+                    "detalhes_tecnicos": "Adição de aba de Atualizações com visualização detalhada do histórico de versões, implementação de métricas em tempo real do sistema, e estilização avançada com CSS/HTML personalizado. Implementado formulário para registro de novas atualizações.",
+                    "arquivos_alterados": [
+                        "pages/98_🛠️_Sistema_Desenvolvedor.py",
+                        "data/updates_history.json"
+                    ],
+                    "horas_desenvolvimento": 32,
+                    "testes_realizados": "Testes de interface em diferentes navegadores e resolução de tela."
+                },
+                {
+                    "tipo": "Correção",
+                    "titulo": "Correções de Bugs no Sistema de Recria",
+                    "descricao": "Diversos bugs corrigidos no módulo de recria, incluindo problemas de cálculo de médias e geração de relatórios.",
+                    "detalhes_tecnicos": "Correção no algoritmo de cálculo de ganho de peso diário para considerar corretamente os dias entre pesagens, ajuste nas fórmulas de conversão alimentar, e correção na geração de relatórios para incluir todos os animais do lote.",
+                    "arquivos_alterados": [
+                        "utils.py",
+                        "pages/50_⚙️_Recria.py"
+                    ],
+                    "horas_desenvolvimento": 16,
+                    "testes_realizados": "Validação dos cálculos com dados reais e comparação de resultados."
+                }
+            ]
+        },
+        {
+            "versao": "1.5.0",
+            "data": "2025-02-15",
+            "autor": "Equipe de Desenvolvimento",
+            "descricao": "Atualização com foco em melhorias de usabilidade e novos recursos de gestão",
+            "codigo_interno": "RELEASE-SUINO-2025-02",
+            "impacto": "Médio",
+            "equipe_responsavel": "Desenvolvimento Back-End e UX",
+            "mudancas": [
+                {
+                    "tipo": "Nova Funcionalidade",
+                    "titulo": "Sistema de Recria Completo",
+                    "descricao": "Adicionado sistema completo para gestão de recria, incluindo controle de lotes, transferências, alimentação e medicação.",
+                    "detalhes_tecnicos": "Implementação de módulo completo com estruturas de dados normalizadas, funções para cálculo de desempenho zootécnico, interface para registro de dados e geração de relatórios automatizados. Criação de múltiplos arquivos CSV para persistência de dados.",
+                    "arquivos_alterados": [
+                        "pages/50_⚙️_Recria.py",
+                        "utils.py", 
+                        "data/recria.csv",
+                        "data/recria_lotes.csv",
+                        "data/recria_pesagens.csv",
+                        "data/recria_transferencias.csv",
+                        "data/recria_alimentacao.csv",
+                        "data/recria_medicacao.csv"
+                    ],
+                    "horas_desenvolvimento": 80,
+                    "testes_realizados": "Testes de validação com produtores reais e simulação de diferentes ciclos de recria."
+                },
+                {
+                    "tipo": "Nova Funcionalidade",
+                    "titulo": "Download de Aplicativo Android",
+                    "descricao": "Adicionada página dedicada para download do aplicativo Android para acesso móvel ao sistema, com atualização automática do pacote.",
+                    "detalhes_tecnicos": "Criação de página com instruções detalhadas para instalação, configuração de build automatizado da versão mais recente do aplicativo e sistema de verificação de versão.",
+                    "arquivos_alterados": [
+                        "pages/99_📥_Download_Aplicativo.py",
+                        "create_download_package.py",
+                        "download_page/index.html",
+                        "download_page/suinocultura_20250215.zip"
+                    ],
+                    "horas_desenvolvimento": 24,
+                    "testes_realizados": "Testes de download e instalação em diferentes dispositivos Android."
+                },
+                {
+                    "tipo": "Melhoria",
+                    "titulo": "Reorganização das Páginas do Sistema",
+                    "descricao": "Páginas reorganizadas em categorias lógicas com novos ícones para melhor navegação e experiência do usuário.",
+                    "detalhes_tecnicos": "Implementado novo sistema de nomenclatura com emojis e números sequenciais para facilitar a navegação, adicionadas páginas separadoras para organizar categorias, e reestruturação completa do fluxo de trabalho.",
+                    "arquivos_alterados": [
+                        "rename_pages.py",
+                        ".streamlit/pages.toml",
+                        "Todos os arquivos em pages/"
+                    ],
+                    "horas_desenvolvimento": 16,
+                    "testes_realizados": "Testes de usabilidade com diferentes perfis de usuários."
+                },
+                {
+                    "tipo": "Melhoria",
+                    "titulo": "Sistema de Relatórios Aprimorado",
+                    "descricao": "Novos relatórios de produtividade e saúde com visualizações gráficas avançadas e opções de exportação.",
+                    "detalhes_tecnicos": "Implementação de novos tipos de gráficos usando Plotly, adição de filtros avançados nos relatórios, e funcionalidade de exportação para múltiplos formatos (Excel, CSV, PDF).",
+                    "arquivos_alterados": [
+                        "pages/45_📋_Relatorios.py", 
+                        "utils.py"
+                    ],
+                    "horas_desenvolvimento": 40,
+                    "testes_realizados": "Validação dos relatórios com dados históricos reais."
+                }
+            ]
+        },
+        {
+            "versao": "1.0.0",
+            "data": "2025-01-01",
+            "autor": "Equipe de Desenvolvimento",
+            "descricao": "Lançamento inicial do Sistema de Gestão Suinocultura",
+            "codigo_interno": "RELEASE-SUINO-2025-01",
+            "impacto": "Alto",
+            "equipe_responsavel": "Desenvolvimento Full-Stack",
+            "mudancas": [
+                {
+                    "tipo": "Nova Funcionalidade",
+                    "titulo": "Sistema de Autenticação de Usuários",
+                    "descricao": "Sistema completo de autenticação e controle de acesso para diferentes tipos de usuários com definição de perfis e permissões.",
+                    "detalhes_tecnicos": "Implementação baseada em session_state do Streamlit com persistência em CSV, sistema de login com validação de credenciais, e controle de sessão com timeout automático.",
+                    "arquivos_alterados": [
+                        "app.py",
+                        "utils.py",
+                        "data/employees.csv"
+                    ],
+                    "horas_desenvolvimento": 40,
+                    "testes_realizados": "Testes de segurança, validação de acesso e penetração."
+                },
+                {
+                    "tipo": "Nova Funcionalidade",
+                    "titulo": "Cadastro e Gestão de Animais",
+                    "descricao": "Funcionalidades para cadastro e acompanhamento dos dados dos animais incluindo vacinas, histórico médico e rastreabilidade completa.",
+                    "detalhes_tecnicos": "Sistema de cadastro com validação de campos, geração de IDs únicos, histórico de alterações, e integração com módulos de peso, saúde e reprodução.",
+                    "arquivos_alterados": [
+                        "pages/03_🐷_Cadastro_Animal.py",
+                        "utils.py",
+                        "data/animals.csv"
+                    ],
+                    "horas_desenvolvimento": 64,
+                    "testes_realizados": "Testes funcionais com cadastro de múltiplos animais e validação de dados."
+                },
+                {
+                    "tipo": "Nova Funcionalidade",
+                    "titulo": "Gestão de Ciclo Reprodutivo",
+                    "descricao": "Sistema completo para gerenciamento do ciclo reprodutivo, inseminação e gestação, com alertas e calendário reprodutivo.",
+                    "detalhes_tecnicos": "Implementação do calendário suíno de 1000 dias, cálculo automático de datas importantes do ciclo reprodutivo, sistema de alerta para eventos próximos, e registro completo de inseminações.",
+                    "arquivos_alterados": [
+                        "pages/10_🔄_Ciclo_Reprodutivo.py",
+                        "pages/11_🤰_Gestacao.py",
+                        "pages/12_💉_Inseminacao.py",
+                        "utils.py",
+                        "data/inseminacao.csv",
+                        "data/heat_detection.csv",
+                        "data/heat_records.csv"
+                    ],
+                    "horas_desenvolvimento": 80,
+                    "testes_realizados": "Validação com ciclos reprodutivos completos e comparação com dados de campo."
+                },
+                {
+                    "tipo": "Nova Funcionalidade",
+                    "titulo": "Controle de Peso e Idade",
+                    "descricao": "Ferramentas para acompanhamento de ganho de peso e desenvolvimento dos animais por idade, com análise estatística e gráficos de evolução.",
+                    "detalhes_tecnicos": "Sistema de registro de pesagens com cálculo automático de ganho de peso diário (GPD), curvas de crescimento esperado por genética, alertas para desvios significativos, e visualização gráfica da evolução do peso.",
+                    "arquivos_alterados": [
+                        "pages/20_⚖️_Peso_Idade.py",
+                        "utils.py"
+                    ],
+                    "horas_desenvolvimento": 56,
+                    "testes_realizados": "Testes com diferentes categorias de animais e validação estatística dos resultados."
+                }
+            ]
+        }
+    ]
+}
