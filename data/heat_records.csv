@@ -1,0 +1,3 @@
+id_registro,id_rufia,id_matriz,data_deteccao,hora_deteccao,intensidade_cio,comportamento,duracao_minutos,sinais_externos,confirmado,responsavel,observacao
+1242fc64-a2ac-49ba-84a5-2d628694d717,44d68e84-ba8f-459f-9e00-21c9cb1ff8bb,68bd2b20-b94b-4aaf-b7b6-be5304409700,2025-03-20,02:42,Médio,"Vulva Inchada, Reflexo de Imobilidade",10,Nenhum,True,Higo,Teste
+a4525af9-53e5-4fb7-b2e3-a8bd17ad66fb,44d68e84-ba8f-459f-9e00-21c9cb1ff8bb,68bd2b20-b94b-4aaf-b7b6-be5304409700,2025-03-20,02:49,Médio,"Vulva Inchada, Reflexo de Imobilidade",10,Inchaço,True,76548,
