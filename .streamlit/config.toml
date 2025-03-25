@@ -1,0 +1,34 @@
+[server]
+headless = true
+# Configuração compatível com proteção XSRF
+enableXsrfProtection = true
+# As configurações de porta e endereço são gerenciadas pelo Streamlit Cloud
+# address = "0.0.0.0"
+# port = 5000
+
+[browser]
+# Configurações do navegador
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#FF6B6B"         # Rosa suave para o tema de suinocultura
+backgroundColor = "#262730"      # Fundo escuro
+secondaryBackgroundColor = "#0E1117"  # Cor secundária escura
+textColor = "#FAFAFA"           # Texto claro para contraste com o fundo escuro
+font = "sans serif"
+base = "dark"                   # Define o tema base como escuro
+
+[ui]
+hideTopBar = false
+
+[runner]
+fastReruns = true
+
+[client]
+showErrorDetails = true
+
+[logger]
+level = "info"
+
+[global]
+developmentMode = false
