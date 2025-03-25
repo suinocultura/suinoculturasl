@@ -1,0 +1,18 @@
+# Configuração das páginas no menu lateral
+
+# Estilo global das páginas
+[global]
+showPagesInSidebar = true
+hideSidebarNavigation = false
+
+# Configurações das seções
+[pages]
+section_spacing = "15px"
+heading_color = "#4B7BA8"
+heading_font_size = "16px"
+page_font_size = "14px"
+indent_depth = "15px"
+
+# Renomear o app principal de "app" para "Login"
+[pages.app]
+displayName = "🔑 Login"
