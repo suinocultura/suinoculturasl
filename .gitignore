@@ -1,0 +1,57 @@
+# Arquivos do Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Arquivos do Streamlit
+.streamlit/secrets.toml
+
+# Ambiente virtual
+venv/
+env/
+ENV/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.swp
+*.swo
+*~
+
+# Arquivos de log
+*.log
+
+# Arquivos de configuração local
+.env
+
+# Diretórios de cache
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Arquivos específicos do sistema
+suinocultura_*.zip
+*.apk
+android_webview_project/*.zip
+apk_build/
+android_app_base/
