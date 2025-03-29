@@ -524,8 +524,18 @@ with st.expander("Como fazer deploy no Firebase", expanded=True):
 
 st.markdown("---")
 
-st.subheader("Pacote para Deploy no Streamlit Cloud")
-st.markdown("Este pacote contém apenas os arquivos necessários para deploy no Streamlit Community Cloud, otimizado para publicação online.")
+st.subheader("📊 Pacote para Deploy no Streamlit Cloud")
+st.markdown("""
+Este pacote contém apenas os arquivos necessários para deploy no Streamlit Community Cloud, 
+otimizado para publicação online com todas as correções aplicadas.
+
+#### ✅ Melhorias no pacote Streamlit Cloud:
+- **Verificação avançada de conflitos**: Detecta e corrige conflitos de nomes entre páginas
+- **Remoção de arquivos duplicados**: Elimina automaticamente arquivos que possam causar erros
+- **Normalização de emojis**: Resolve conflitos causados por caracteres especiais
+- **Compatibilidade garantida**: Testado para funcionar sem problemas no Streamlit Cloud
+- **Estrutura otimizada**: Inclui apenas os arquivos essenciais para o deploy
+""")
 
 col1, col2 = st.columns(2)
 
@@ -535,6 +545,7 @@ with col1:
         
         file_size = round(os.path.getsize(cloud_zip_path) / (1024), 2)
         st.caption(f"Tamanho do arquivo: {file_size} KB")
+    st.caption("Baixe e envie manualmente para o GitHub")
 
 with col2:
     # Criando botão via Streamlit
@@ -687,13 +698,20 @@ with st.expander("Instruções para usar o arquivo baixado", expanded=True):
     
     #### 🚨 Resolução de problemas no Streamlit Cloud:
     
-    Se você encontrar erros de API durante o deploy, verifique:
+    Este pacote inclui ferramentas avançadas para evitar problemas comuns de deploy. O sistema:
     
-    1. **Conflitos de nomes de arquivos**: Renomeie arquivos para evitar nomes duplicados que podem confundir o Streamlit
-    2. **Estrutura de páginas**: Certifique-se que a estrutura de páginas está correta e sem arquivos duplicados
-    3. **Segredos**: Verifique se os segredos foram configurados corretamente em Settings > Secrets
-    4. **Dependências**: Confirmese que todas as dependências estão listadas no `requirements.txt`
-    5. **Restaurar código**: Em caso de problemas persistentes, clone novamente o pacote e reimporte para o GitHub
+    1. **Detecta e corrige automaticamente conflitos** entre nomes de páginas
+    2. **Normaliza arquivos com emojis** que podem causar problemas de navegação
+    3. **Remove arquivos de backup duplicados** que geram StreamlitAPIException
+    4. **Verifica estrutura de arquivos** para garantir compatibilidade total
+    
+    Se mesmo assim você encontrar erros durante o deploy:
+    
+    1. **Execute check_pages_compatibility.py**: `python check_pages_compatibility.py --apply` para verificar e corrigir manualmente conflitos
+    2. **Verifique as secrets**: Configure corretamente as credenciais em Settings > Secrets
+    3. **Confirme dependências**: Certifique-se que o `requirements.txt` está completo
+    4. **Use o pacote mais recente**: Se necessário, volte ao sistema original e gere um novo pacote de deploy
+    5. **Consulte o INSTRUCOES_DEPLOY.txt**: Contém soluções específicas para os problemas mais comuns
     
     ### Como configurar o Firebase e Firestore:
     
