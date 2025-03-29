@@ -685,6 +685,16 @@ with st.expander("Instruções para usar o arquivo baixado", expanded=True):
     - NÃO especifique uma porta personalizada no Streamlit Cloud, deixe usar a porta padrão (8501)
     - O arquivo `requirements.txt` já contém todas as dependências necessárias
     
+    #### 🚨 Resolução de problemas no Streamlit Cloud:
+    
+    Se você encontrar erros de API durante o deploy, verifique:
+    
+    1. **Conflitos de nomes de arquivos**: Renomeie arquivos para evitar nomes duplicados que podem confundir o Streamlit
+    2. **Estrutura de páginas**: Certifique-se que a estrutura de páginas está correta e sem arquivos duplicados
+    3. **Segredos**: Verifique se os segredos foram configurados corretamente em Settings > Secrets
+    4. **Dependências**: Confirmese que todas as dependências estão listadas no `requirements.txt`
+    5. **Restaurar código**: Em caso de problemas persistentes, clone novamente o pacote e reimporte para o GitHub
+    
     ### Como configurar o Firebase e Firestore:
     
     1. Crie um projeto no Firebase Console: https://console.firebase.google.com/
@@ -723,6 +733,22 @@ with st.expander("Instruções para usar o arquivo baixado", expanded=True):
        - A sincronização automática acontece quando o dispositivo está online
     """)
 
+with st.expander("Guia Completo de Deployment"):
+    st.markdown("""
+    ### 📚 Documentação detalhada de deployment
+    
+    O arquivo `README_DEPLOY.md` contém instruções completas e detalhadas sobre:
+    
+    - Deploy no Streamlit Community Cloud (passo a passo)
+    - Solução de problemas comuns no deploy
+    - Melhores práticas para o Streamlit Cloud
+    - Deploy no Firebase Hosting
+    - Criação de APK Android
+    - Perguntas frequentes
+    
+    👉 **Confira o [guia completo](README_DEPLOY.md) para mais informações.**
+    """)
+    
 with st.expander("Problemas ao baixar?"):
     st.markdown("""
     Se você estiver enfrentando problemas para baixar o arquivo, tente estas alternativas:
