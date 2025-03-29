@@ -39,7 +39,15 @@ Se você encontrar erros durante o deploy no Streamlit Cloud, verifique:
 2. **Pacotes incompatíveis**: Certifique-se que o `requirements.txt` não contém pacotes incompatíveis como Kivy, Buildozer ou qualquer dependência específica para Android.
 3. **Imports incorretos**: Verifique se não há imports de módulos que não estão disponíveis no ambiente Streamlit Cloud.
 4. **Segredos (Secrets)**: Configure corretamente os segredos nas configurações do aplicativo no Streamlit Cloud.
-5. **Duplicidade de páginas**: Certifique-se que não há páginas com nomes similares no diretório `pages/`.
+5. **Conflitos de páginas**: O sistema agora inclui detecção automática e correção de problemas de nomenclatura de páginas:
+   - **Prefixos duplicados**: Páginas com o mesmo prefixo numérico (ex: "01_")
+   - **Nomes similares**: Páginas com nomes quase idênticos ignorando maiúsculas/minúsculas
+   - **Arquivos de backup**: Arquivos temporários ou de backup (ex: nome_old.py)
+
+   Para executar manualmente a verificação de conflitos, use o comando:
+   ```
+   python check_pages_compatibility.py --fix
+   ```
 
 ### Melhores Práticas para o Streamlit Cloud
 
@@ -83,3 +91,21 @@ Verifique os logs do aplicativo no Streamlit Cloud para identificar o problema. 
 ### Como atualizar meu aplicativo no Streamlit Cloud?
 
 Simplesmente faça push das alterações para o repositório GitHub. O Streamlit Cloud detectará as mudanças e atualizará o aplicativo automaticamente.
+
+### Estou enfrentando erros de navegação ou páginas que não carregam corretamente
+
+Se você está enfrentando problemas como:
+- Páginas que não aparecem no menu lateral
+- Erro "StreamlitAPIException: A page has the same name as a page from another module"
+- Erros de navegação no aplicativo após o deploy
+
+Estes problemas geralmente são causados por conflitos de nomenclatura entre as páginas. O sistema agora inclui uma ferramenta automática para detectar e corrigir esses problemas:
+
+1. Execute o comando `python check_pages_compatibility.py --fix`
+2. Gere um novo pacote de deploy com `python prepare_streamlit_cloud.py`
+3. Faça o deploy do novo pacote
+
+A ferramenta detecta e corrige automaticamente:
+- Páginas com o mesmo prefixo numérico
+- Páginas com nomes muito semelhantes (ignorando maiúsculas/minúsculas)
+- Arquivos de backup ou temporários no diretório de páginas
