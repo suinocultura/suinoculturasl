@@ -11,7 +11,7 @@ if "authenticated" not in st.session_state or not st.session_state.authenticated
 # Isso é injetado para criar um efeito de "seção" colorida no sidebar
 st.markdown("""
 <style>
-    [data-testid="stSidebarNav"] li:has(div p:contains("🔹 SAUDE")) div p {
+    [data-testid="stSidebarNav"] li:has(div p:contains("🔹 SAUDE_GERAL")) div p {
         color: #F7B801 !important;
         font-weight: 600 !important;
         font-size: 16px !important;
