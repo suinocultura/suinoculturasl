@@ -68,8 +68,11 @@ def detect_name_similarity_conflicts(pages):
         name = re.sub(r"^\d+[_\-]", "", page)
         name = os.path.splitext(name)[0]
         
-        # Remove emojis
+        # Remove emojis e caracteres especiais (mais agressivamente)
         name = re.sub(r"[^\w\s]", "", name)
+        
+        # Remove underscores, hífens e espaços
+        name = re.sub(r"[_\-\s]", "", name)
         
         # Converte para lowercase
         name = name.lower()
@@ -97,15 +100,36 @@ def detect_backup_files(pages):
         r"-backup\.py$",
         r"_old\.py$",
         r"-old\.py$",
-        r"~$"
+        r"~$",
+        r"_copy\.py$",
+        r"-copy\.py$",
+        r"_\d+\.py$",  # Arquivos com sufixo numérico (ex: arquivo_1.py)
+        r"-\d+\.py$",  # Arquivos com sufixo numérico com hífen
+        r"\(\d+\)\.py$",  # Arquivos com sufixo numérico entre parênteses
+        r"_temp\.py$",
+        r"-temp\.py$",
+        r"_draft\.py$",
+        r"-draft\.py$",
+        r"_novo\.py$",
+        r"_new\.py$",
+        r"_bak_.*\.py$"  # Qualquer arquivo com _bak_ no nome
     ]
+    
+    # Identificar arquivos com padrão 98_bak_Nome.py
+    explicit_backup_pattern = re.compile(r'^\d+_bak[_\-].*\.py$')
     
     backups = []
     for page in pages:
+        # Verificar padrões comuns
         for pattern in backup_patterns:
             if re.search(pattern, page):
                 backups.append(page)
                 break
+                
+        # Verificar padrão explícito de backup
+        if explicit_backup_pattern.match(page):
+            if page not in backups:
+                backups.append(page)
     
     return backups
 
