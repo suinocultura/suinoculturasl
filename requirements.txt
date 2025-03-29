@@ -6,3 +6,5 @@ plotly
 trafilatura
 PyGithub
 requests
+firebase-admin
+firebase-admin
