@@ -636,7 +636,13 @@ if st.session_state.show_github_form:
                             match = re.search(r'(https://streamlit\.io/deploy\?.*)', message)
                             if match:
                                 streamlit_url = match.group(1)
-                                st.markdown(f"[Clique aqui para implantar no Streamlit Cloud]({streamlit_url})", unsafe_allow_html=False)
+                                st.markdown(f"""
+                                ### ✨ Pronto para deploy! 
+                                
+                                [CLIQUE AQUI PARA IMPLANTAR NO STREAMLIT CLOUD]({streamlit_url})
+                                
+                                Lembre-se de configurar as secrets após o deploy inicial.
+                                """, unsafe_allow_html=False)
                         else:
                             st.error(message)
     except Exception as e:
@@ -671,7 +677,13 @@ with st.expander("Instruções para usar o arquivo baixado", expanded=True):
     7. Selecione o repositório que você criou
     8. Em "Main file path", mantenha "app.py"
     9. Clique em "Deploy!"
-    10. Configure as secrets nas configurações do aplicativo conforme o arquivo .streamlit/secrets.toml.example
+    10. **IMPORTANTE:** Configure as secrets nas configurações do aplicativo conforme o arquivo `.streamlit/secrets.toml.example`
+    
+    #### Observações importantes para o deploy:
+    
+    - O arquivo `.streamlit/config.toml` foi configurado para ser compatível com o Streamlit Cloud
+    - NÃO especifique uma porta personalizada no Streamlit Cloud, deixe usar a porta padrão (8501)
+    - O arquivo `requirements.txt` já contém todas as dependências necessárias
     
     ### Como configurar o Firebase e Firestore:
     
