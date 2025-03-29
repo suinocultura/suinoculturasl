@@ -140,6 +140,8 @@ O pacote mais recente inclui verificações aprimoradas que:
 3. **Move arquivos conflitantes**: Em vez de apenas renomear, move os arquivos para um diretório de backup para evitar conflitos persistentes
 4. **Analisa similaridade semântica**: Detecta nomes quase idênticos mesmo com diferenças sutis
 5. **Verifica duplicações em metadados**: Busca conflitos nas configurações do arquivo .streamlit/pages.toml
+6. **Detecta arquivos temporários ocultos**: Identifica arquivos de backup criados por editores de código que podem causar conflitos
+7. **Reconhece variações específicas de case**: Identifica conflitos entre arquivos cujos nomes diferem apenas por maiúsculas/minúsculas
 
 #### Como usar a ferramenta manualmente:
 
@@ -164,4 +166,23 @@ python prepare_streamlit_cloud.py
 - Verifique o arquivo `.streamlit/pages.toml` em busca de configurações duplicadas
 - Renomeie páginas com prefixos numéricos garantindo que sejam únicos
 
-> **Importante**: O novo pacote de deploy para Streamlit Cloud já executa todas essas verificações automaticamente, então ao baixar a versão mais recente do pacote de deploy, os problemas de conflitos já estarão resolvidos.
+#### Opções avançadas para geração de pacotes de deploy:
+
+```bash
+# Criar pacote incluindo apenas arquivos modificados desde o último deploy
+python prepare_streamlit_cloud.py --only-modified
+
+# Criar pacote movendo arquivos conflitantes (não renomeando)
+python prepare_streamlit_cloud.py --move-conflicts
+
+# Criar pacote sem executar verificações de compatibilidade
+python prepare_streamlit_cloud.py --skip-adjustments
+
+# Criar pacote apenas com arquivos modificados e movendo conflitos 
+python prepare_streamlit_cloud.py --only-modified --move-conflicts
+
+# Obter ajuda sobre todas as opções disponíveis
+python prepare_streamlit_cloud.py --help
+```
+
+> **Importante**: O novo pacote de deploy para Streamlit Cloud já executa todas essas verificações automaticamente, então ao baixar a versão mais recente do pacote de deploy, os problemas de conflitos já estarão resolvidos. A nova opção `--move-conflicts` é especialmente útil quando renomear os arquivos não é suficiente para resolver conflitos persistentes no Streamlit Cloud.
