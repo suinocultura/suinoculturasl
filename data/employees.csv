@@ -1,4 +1,4 @@
 id_colaborador,nome,matricula,cargo,setor,data_admissao,status,ultimo_acesso,observacao
 62302b3b-49ce-45de-803d-cc3ec7cf5106,Administrador,admin,Administrador,Administrativo,2025-03-20,Ativo,2025-03-23 21:23:05,Usuário administrador padrão
-1db6334e-b8b5-45b9-bf27-331a31ed58ce,Hugo,hugo,Desenvolvedor,Desenvolvimento,2025-03-23,Ativo,2025-03-29 20:19:40,Desenvolvedor do sistema
+1db6334e-b8b5-45b9-bf27-331a31ed58ce,Hugo,hugo,Desenvolvedor,Desenvolvimento,2025-03-23,Ativo,2025-03-29 20:29:08,Desenvolvedor do sistema
 05e92784-ea49-4948-891a-463b6da5b7b7,Maria,maria,Técnico,Terminação,2025-03-23,Ativo,2025-03-23 22:08:21,Usuário comum para teste
