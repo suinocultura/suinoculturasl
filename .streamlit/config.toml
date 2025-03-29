@@ -2,9 +2,8 @@
 headless = true
 # Configuração compatível com proteção XSRF
 enableXsrfProtection = true
-# Configurações de porta e endereço para o servidor
+# Configuração de endereço (a porta será definida pelo Streamlit Cloud)
 address = "0.0.0.0"
-port = 5000
 
 [browser]
 # Configurações do navegador
