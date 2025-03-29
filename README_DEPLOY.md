@@ -33,21 +33,49 @@ Este guia contém instruções detalhadas para fazer o deploy do Sistema Suinocu
 
 ### Solução de Problemas no Streamlit Cloud
 
-Se você encontrar erros durante o deploy no Streamlit Cloud, verifique:
+#### Verificação Automática de Compatibilidade
+
+O pacote mais recente para Streamlit Cloud inclui verificação automática avançada de compatibilidade que é executada durante a geração do pacote. Esta verificação:
+
+1. **Detecta e corrige conflitos de nomenclatura**: Identifica e resolve problemas com nomes de páginas
+2. **Normaliza emojis e caracteres especiais**: Evita problemas com caracteres que podem causar erros no navegador
+3. **Remove arquivos temporários e de backup**: Elimina arquivos duplicados ou desnecessários
+4. **Verifica metadados das páginas**: Analisa configurações em .streamlit/pages.toml em busca de conflitos
+5. **Organiza a estrutura de diretórios**: Garante que a estrutura seja compatível com o Streamlit Cloud
+
+#### Verificação Manual de Problemas
+
+Se mesmo assim você encontrar erros durante o deploy, verifique:
 
 1. **Configuração de porta**: O Streamlit Cloud usa a porta 8501 por padrão. Não defina a porta no arquivo `config.toml`.
 2. **Pacotes incompatíveis**: Certifique-se que o `requirements.txt` não contém pacotes incompatíveis como Kivy, Buildozer ou qualquer dependência específica para Android.
 3. **Imports incorretos**: Verifique se não há imports de módulos que não estão disponíveis no ambiente Streamlit Cloud.
 4. **Segredos (Secrets)**: Configure corretamente os segredos nas configurações do aplicativo no Streamlit Cloud.
-5. **Conflitos de páginas**: O sistema agora inclui detecção automática e correção de problemas de nomenclatura de páginas:
-   - **Prefixos duplicados**: Páginas com o mesmo prefixo numérico (ex: "01_")
-   - **Nomes similares**: Páginas com nomes quase idênticos ignorando maiúsculas/minúsculas
-   - **Arquivos de backup**: Arquivos temporários ou de backup (ex: nome_old.py)
+5. **Erros de StreamlitAPIException**: Se aparecer este erro específico, é quase sempre devido a:
+   - **Páginas com nomes idênticos**: Mesmo com arquivos diferentes, o Streamlit pode interpretar como o mesmo nome
+   - **Emojis conflitantes**: Alguns emojis parecem diferentes mas são tratados como iguais pelo Streamlit
+   - **Arquivos ocultos ou temporários**: Arquivos .bak, .old, ou com ~ no diretório pages/
 
-   Para executar manualmente a verificação de conflitos, use o comando:
-   ```
-   python check_pages_compatibility.py --fix
-   ```
+#### Ferramentas de Diagnóstico e Correção
+
+Para executar manualmente a verificação e correção de conflitos:
+
+```bash
+# Verificar apenas (análise sem alterações)
+python check_pages_compatibility.py
+
+# Verificar e corrigir automaticamente
+python check_pages_compatibility.py --fix
+
+# Verificar, corrigir e mover arquivos conflitantes para diretório seguro
+python check_pages_compatibility.py --fix --move-conflicts
+```
+
+#### Dicas para Problemas Específicos
+
+- **Páginas desaparecendo do menu**: Verifique os nomes dos arquivos em busca de conflitos de prefixo numérico
+- **Erros de navegação**: Certifique-se que não há duas páginas com nomes muito semelhantes
+- **Página carrega em branco**: Verifique os logs para identificar erros de importação ou pacotes faltando
 
 ### Melhores Práticas para o Streamlit Cloud
 
@@ -98,14 +126,42 @@ Se você está enfrentando problemas como:
 - Páginas que não aparecem no menu lateral
 - Erro "StreamlitAPIException: A page has the same name as a page from another module"
 - Erros de navegação no aplicativo após o deploy
+- Problema com caracteres ou emojis nas páginas
+- Páginas carregando em ordem incorreta
 
-Estes problemas geralmente são causados por conflitos de nomenclatura entre as páginas. O sistema agora inclui uma ferramenta automática para detectar e corrigir esses problemas:
+Estes problemas geralmente são causados por conflitos de nomenclatura entre as páginas. O sistema agora inclui uma ferramenta aprimorada para detectar e corrigir esses problemas automaticamente:
 
-1. Execute o comando `python check_pages_compatibility.py --fix`
-2. Gere um novo pacote de deploy com `python prepare_streamlit_cloud.py`
-3. Faça o deploy do novo pacote
+#### Ferramenta Avançada de Verificação de Conflitos
 
-A ferramenta detecta e corrige automaticamente:
-- Páginas com o mesmo prefixo numérico
-- Páginas com nomes muito semelhantes (ignorando maiúsculas/minúsculas)
-- Arquivos de backup ou temporários no diretório de páginas
+O pacote mais recente inclui verificações aprimoradas que:
+
+1. **Detecta emojis similares ou conflitantes**: Identifica emojis que podem parecer diferentes mas são tratados como iguais pelo Streamlit
+2. **Normaliza nomes de arquivos**: Elimina problemas com caracteres especiais e formatação
+3. **Move arquivos conflitantes**: Em vez de apenas renomear, move os arquivos para um diretório de backup para evitar conflitos persistentes
+4. **Analisa similaridade semântica**: Detecta nomes quase idênticos mesmo com diferenças sutis
+5. **Verifica duplicações em metadados**: Busca conflitos nas configurações do arquivo .streamlit/pages.toml
+
+#### Como usar a ferramenta manualmente:
+
+```bash
+# Verificar apenas (não altera arquivos)
+python check_pages_compatibility.py
+
+# Verificar e aplicar correções automaticamente
+python check_pages_compatibility.py --fix
+
+# Verificar, corrigir e mover arquivos conflitantes para pages_backup
+python check_pages_compatibility.py --fix --move-conflicts
+
+# Após corrigir, gerar novo pacote de deploy
+python prepare_streamlit_cloud.py
+```
+
+#### Ações corretivas adicionais:
+
+- Se os problemas persistirem, use a opção `--move-conflicts` para mover arquivos conflitantes para um diretório de backup
+- Remova manualmente arquivos .bak, .old ou qualquer cópia de backup no diretório pages/
+- Verifique o arquivo `.streamlit/pages.toml` em busca de configurações duplicadas
+- Renomeie páginas com prefixos numéricos garantindo que sejam únicos
+
+> **Importante**: O novo pacote de deploy para Streamlit Cloud já executa todas essas verificações automaticamente, então ao baixar a versão mais recente do pacote de deploy, os problemas de conflitos já estarão resolvidos.
