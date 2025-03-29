@@ -30,6 +30,28 @@ if 'authenticated' not in st.session_state:
 if 'current_user' not in st.session_state:
     st.session_state.current_user = None
 
+# Inicialização das variáveis do APK WebView
+if 'apk_app_name' not in st.session_state:
+    st.session_state.apk_app_name = "Sistema Suinocultura"
+if 'apk_package_name' not in st.session_state:
+    st.session_state.apk_package_name = "com.suinocultura.app"
+if 'apk_version' not in st.session_state:
+    st.session_state.apk_version = "1.0.0"
+if 'apk_url' not in st.session_state:
+    st.session_state.apk_url = "https://suinocultura.replit.app"
+if 'apk_primary_color' not in st.session_state:
+    st.session_state.apk_primary_color = "#4CAF50"
+if 'apk_dark_mode' not in st.session_state:
+    st.session_state.apk_dark_mode = False
+if 'apk_splash_screen' not in st.session_state:
+    st.session_state.apk_splash_screen = True
+if 'apk_enable_cache' not in st.session_state:
+    st.session_state.apk_enable_cache = True
+if 'apk_enable_zoom' not in st.session_state:
+    st.session_state.apk_enable_zoom = True
+if 'apk_offline_message' not in st.session_state:
+    st.session_state.apk_offline_message = "Sem conexão com a internet. Tente novamente mais tarde."
+
 # Verificar se o usuário está autenticado
 if 'authenticated' not in st.session_state or not st.session_state.authenticated:
     st.error("Você precisa estar autenticado para acessar esta página.")
@@ -130,7 +152,7 @@ st.markdown("""
 st.markdown('<div class="dev-header"><h1>🛠️ Sistema do Desenvolvedor</h1><p>Ferramentas avançadas para gerenciamento e desenvolvimento do sistema</p></div>', unsafe_allow_html=True)
 
 # Tabs para as diferentes funcionalidades
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Dashboard", "👥 Gerenciamento de Usuários", "🔄 Manutenção", "⚙️ Configurações", "📥 Downloads", "🔄 Atualizações"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["📊 Dashboard", "👥 Gerenciamento de Usuários", "🔄 Manutenção", "⚙️ Configurações", "📥 Downloads", "🔄 Atualizações", "🧩 Componentes"])
 
 with tab1:
     st.markdown('<div class="dev-section"><h2>Dashboard de Desenvolvimento</h2></div>', unsafe_allow_html=True)
@@ -2395,6 +2417,1209 @@ with tab6:
             """)
         
         st.markdown('</div>', unsafe_allow_html=True)
+
+# Aba Kivy Mobile
+    st.markdown('<div class="dev-section"><h2>Gerador de APK WebView</h2></div>', unsafe_allow_html=True)
+    
+    # Definindo as tabs para o gerador de APK
+    apk_tab1, apk_tab2, apk_tab3 = st.tabs(["📱 Configuração Básica", "⚙️ Configurações Avançadas", "🛠️ Compilação"])
+    
+    # Aba 1 - WebView Personalizado
+    with apk_tab1:
+        st.subheader("Personalize seu APK WebView")
+        
+        col1, col2 = st.columns([2, 1])
+        
+        # Coluna 1 - Formulário principal
+        with col1:
+            with st.form("apk_webview_form"):
+                st.markdown("### Configurações Básicas")
+                
+                app_name = st.text_input("Nome do Aplicativo", 
+                                         value=st.session_state.apk_app_name,
+                                         help="Nome que aparecerá no dispositivo do usuário")
+                                         
+                package_name = st.text_input("Nome do Pacote", 
+                                            value=st.session_state.apk_package_name,
+                                            help="Identificador único do aplicativo, formato: com.example.app")
+                                            
+                app_version = st.text_input("Versão", 
+                                           value=st.session_state.apk_version,
+                                           help="Versão do aplicativo (ex: 1.0.0)")
+                                           
+                app_url = st.text_input("URL do Sistema Suinocultura", 
+                                       value=st.session_state.apk_url,
+                                       help="URL completa da aplicação web (incluindo https://)")
+                
+                st.markdown("### Personalização Visual")
+                
+                app_color = st.color_picker("Cor Principal", 
+                                           value=st.session_state.apk_primary_color,
+                                           help="Cor principal do aplicativo")
+                                           
+                dark_mode = st.checkbox("Habilitar Modo Escuro", 
+                                       value=st.session_state.apk_dark_mode,
+                                       help="Aplica tema escuro ao aplicativo")
+                                       
+                enable_splash = st.checkbox("Tela de Splash", 
+                                          value=st.session_state.apk_splash_screen,
+                                          help="Exibe uma tela de abertura ao iniciar o aplicativo")
+                
+                st.markdown("### Configurações Técnicas")
+                                       
+                enable_cache = st.checkbox("Habilitar Cache", 
+                                         value=st.session_state.apk_enable_cache,
+                                         help="Permite que o aplicativo armazene dados em cache para uso offline")
+                                         
+                enable_zoom = st.checkbox("Permitir Zoom", 
+                                        value=st.session_state.apk_enable_zoom,
+                                        help="Permite que o usuário use gestos de zoom na aplicação")
+                                        
+                offline_message = st.text_area("Mensagem Offline", 
+                                             value=st.session_state.apk_offline_message,
+                                             help="Mensagem exibida quando o aplicativo está sem conexão")
+                
+                submitted = st.form_submit_button("Gerar APK WebView", type="primary")
+                
+                if submitted:
+                    # Salvar configurações na session state
+                    st.session_state.apk_app_name = app_name
+                    st.session_state.apk_package_name = package_name
+                    st.session_state.apk_version = app_version
+                    st.session_state.apk_url = app_url
+                    st.session_state.apk_primary_color = app_color
+                    st.session_state.apk_dark_mode = dark_mode
+                    st.session_state.apk_enable_cache = enable_cache
+                    st.session_state.apk_enable_zoom = enable_zoom
+                    st.session_state.apk_splash_screen = enable_splash
+                    st.session_state.apk_offline_message = offline_message
+                    
+                    # Gerar APK WebView usando o simpler_webview_app_creator.py
+                    try:
+                        with st.spinner("Gerando projeto Android WebView..."):
+                            # Importar e executar o script
+                            import importlib.util
+                            
+                            # Carregar o script
+                            spec = importlib.util.spec_from_file_location("simpler_webview_app_creator", "simpler_webview_app_creator.py")
+                            webview_creator = importlib.util.module_from_spec(spec)
+                            spec.loader.exec_module(webview_creator)
+                            
+                            # Sobrescrever as configurações no módulo
+                            webview_creator.APP_NAME = app_name
+                            webview_creator.PACKAGE_NAME = package_name
+                            webview_creator.VERSION = app_version
+                            webview_creator.URL = app_url
+                            
+                            # Criar pasta temporária para o projeto
+                            project_dir = "android_webview_project"
+                            if os.path.exists(project_dir):
+                                shutil.rmtree(project_dir)
+                            
+                            # Executar criação do projeto
+                            os.makedirs(project_dir, exist_ok=True)
+                            
+                            # Alterar o diretório de trabalho
+                            original_dir = os.getcwd()
+                            os.chdir(project_dir)
+                            
+                            # Criar estrutura do projeto
+                            webview_creator.create_project_structure()
+                            webview_creator.create_manifest()
+                            webview_creator.create_main_activity()
+                            webview_creator.create_layout()
+                            webview_creator.create_strings()
+                            webview_creator.create_colors()
+                            webview_creator.create_build_gradle()
+                            webview_creator.create_gradle_wrapper()
+                            webview_creator.create_settings_gradle()
+                            webview_creator.create_icon()
+                            
+                            # Aplicar personalizações adicionais
+                            # Aqui você pode modificar os arquivos gerados para adicionar as personalizações extras
+                            
+                            # Criar ZIP
+                            zip_path = webview_creator.create_project_zip()
+                            
+                            # Criar guia HTML
+                            html_guide_path = webview_creator.create_online_apk_guide()
+                            
+                            # Criar a alternativa direta
+                            direct_apk_path = webview_creator.create_direct_apk_alternative()
+                            
+                            # Voltar ao diretório original
+                            os.chdir(original_dir)
+                            
+                            st.success("Projeto para geração de APK WebView criado com sucesso!")
+                            
+                            # Opção para download do projeto
+                            zip_file = f"{project_dir}.zip"
+                            if os.path.exists(zip_file):
+                                with open(zip_file, "rb") as file:
+                                    btn = st.download_button(
+                                        label="📥 Download do Projeto Android",
+                                        data=file,
+                                        file_name=zip_file,
+                                        mime="application/zip",
+                                        help="Baixe o projeto Android completo para compilar localmente"
+                                    )
+                            
+                            # Exibir instruções
+                            st.info("Siga as instruções abaixo para compilar o APK ou use o método online.")
+                            
+                    except Exception as e:
+                        st.error(f"Erro ao gerar o projeto: {str(e)}")
+                        import traceback
+                        st.code(traceback.format_exc())
+                        
+        # Coluna 2 - Preview e instruções
+        with col2:
+            st.markdown("### Preview do Aplicativo")
+            
+            # Mostrar preview do aplicativo
+            preview_color = st.session_state.apk_primary_color
+            preview_name = st.session_state.apk_app_name
+            preview_dark = st.session_state.apk_dark_mode
+            
+            # Gerar um preview simulado do aplicativo
+            bg_color = "#121212" if preview_dark else "#FFFFFF"
+            text_color = "#FFFFFF" if preview_dark else "#000000"
+            status_bar_color = "#000000" if preview_dark else "#EEEEEE"
+            
+            st.markdown(f"""
+            <div style="border: 1px solid #AAA; border-radius: 10px; overflow: hidden; width: 220px; margin: 0 auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <!-- Status Bar -->
+                <div style="background-color: {status_bar_color}; color: {'#FFFFFF' if preview_dark else '#777777'}; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: flex-end; padding: 0 5px;">
+                    <span>12:34 PM</span>
+                </div>
+                
+                <!-- Action Bar -->
+                <div style="background-color: {preview_color}; color: white; padding: 10px; text-align: left; font-weight: bold; font-size: 14px;">
+                    {preview_name}
+                </div>
+                
+                <!-- Content Area -->
+                <div style="background-color: {bg_color}; color: {text_color}; height: 320px; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                        <div style="width: 50px; height: 50px; border-radius: 50%; background-color: {preview_color}; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
+                            <span style="color: white; font-size: 24px;">🐷</span>
+                        </div>
+                        <div style="color: {text_color};">Carregando...</div>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Dicas
+            st.markdown("### Dicas")
+            
+            st.info("""
+            - Use cores que combinem com a identidade visual do sistema
+            - O modo escuro é recomendado para reduzir o consumo de bateria em telas OLED
+            - O cache permite uso parcial do app sem conexão
+            """)
+            
+    # Aba 2 - Configurações Avançadas
+    with apk_tab2:
+        st.subheader("Configurações Avançadas")
+        
+        col1, col2 = st.columns([1, 1])
+        
+        with col1:
+            st.markdown("### Comportamento do WebView")
+            
+            javascript_enabled = st.checkbox("Habilitar JavaScript", value=True, 
+                                           help="Permite a execução de JavaScript no WebView")
+            
+            hardware_acceleration = st.checkbox("Aceleração de Hardware", value=True, 
+                                              help="Utiliza GPU para renderização mais rápida")
+            
+            dom_storage = st.checkbox("DOM Storage", value=True, 
+                                     help="Permite armazenamento local persistente")
+                                     
+            database_storage = st.checkbox("Database Storage", value=True, 
+                                         help="Permite uso de bancos de dados locais (SQLite)")
+                                         
+            file_access = st.checkbox("Acesso a Arquivos", value=True, 
+                                     help="Permite que o aplicativo acesse arquivos locais")
+            
+            st.markdown("### Permissões")
+            
+            permission_internet = st.checkbox("Internet", value=True, disabled=True, 
+                                            help="Acesso à internet (obrigatório)")
+            
+            permission_network_state = st.checkbox("Estado da Rede", value=True, 
+                                                 help="Verificar o estado da conexão")
+            
+            permission_storage = st.checkbox("Armazenamento", value=False, 
+                                           help="Acesso ao armazenamento do dispositivo")
+            
+            permission_camera = st.checkbox("Câmera", value=False, 
+                                          help="Acesso à câmera para captura de imagens")
+            
+            permission_location = st.checkbox("Localização", value=False, 
+                                            help="Acesso à localização do dispositivo")
+        
+        with col2:
+            st.markdown("### Configurações de Interface")
+            
+            orientation = st.radio("Orientação da Tela", 
+                                  options=["portrait", "landscape", "sensor"],
+                                  index=0,
+                                  help="Orientação preferida do aplicativo")
+            
+            fullscreen = st.checkbox("Tela Cheia", value=False, 
+                                    help="Executa o aplicativo em modo de tela cheia")
+            
+            keep_screen_on = st.checkbox("Manter Tela Ligada", value=False, 
+                                        help="Evita que a tela se desligue durante o uso do aplicativo")
+            
+            st.markdown("### Configurações de Build")
+            
+            min_sdk = st.slider("Android Mínimo", min_value=16, max_value=33, value=21, 
+                               help="Versão mínima do Android suportada (21 = Android 5.0)")
+            
+            target_sdk = st.slider("Android Alvo", min_value=min_sdk, max_value=33, value=33, 
+                                  help="Versão alvo do Android")
+            
+            accept_advanced = st.button("Aplicar Configurações Avançadas", type="primary")
+            
+            if accept_advanced:
+                st.success("Configurações avançadas aplicadas com sucesso!")
+                
+            st.info("""
+            **Nota:** As configurações avançadas exigem conhecimento de desenvolvimento 
+            Android e podem afetar a compatibilidade do aplicativo em alguns dispositivos.
+            """)
+    
+    # Aba 3 - Métodos de Compilação
+    with apk_tab3:
+        st.subheader("Métodos para Compilação")
+        
+        st.markdown("""
+        Existem várias maneiras de compilar o APK WebView gerado. Escolha a opção que melhor se adapta às suas necessidades:
+        """)
+        
+        # Método 1 - Serviço Online
+        st.markdown("### 1. Serviço Online")
+        
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:
+            st.markdown("""
+            **O que é:** Serviços online que permitem fazer upload do seu projeto Android e receber um APK compilado.
+            
+            **Vantagens:**
+            - Não requer instalação de ferramentas
+            - Processo rápido e simples
+            - Funciona em qualquer sistema operacional
+            
+            **Desvantagens:**
+            - Menos personalização
+            - Pode ter limitações em serviços gratuitos
+            - Requer upload do código-fonte
+            """)
+        
+        with col2:
+            st.markdown("""
+            **Recomendado para:**
+            - Usuários iniciantes
+            - Testes rápidos
+            - Quem não tem ambiente de desenvolvimento
+            """)
+        
+        # Botão para abrir o guia de serviço online
+        if st.button("Abrir Guia de Serviço Online", type="secondary"):
+            # Verificar se o arquivo existente
+            html_guide_path = "download_page/buildozer_online_guide.html"
+            
+            if os.path.exists(html_guide_path):
+                # Abrir o arquivo HTML em uma nova guia usando JavaScript
+                js_code = f"""
+                <script>
+                    window.open('/download_page/buildozer_online_guide.html', '_blank');
+                </script>
+                """
+                st.markdown(js_code, unsafe_allow_html=True)
+                st.success("Guia aberto em uma nova guia!")
+            else:
+                st.error("Guia não encontrado. Execute primeiro a geração do APK.")
+        
+        st.markdown("---")
+        
+        # Método 2 - Android Studio
+        st.markdown("### 2. Android Studio")
+        
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:
+            st.markdown("""
+            **O que é:** O ambiente de desenvolvimento oficial para Android.
+            
+            **Vantagens:**
+            - Controle total sobre o processo de compilação
+            - Possibilidade de depuração avançada
+            - Mais opções de personalização
+            
+            **Desvantagens:**
+            - Requer instalação do Android Studio (+ 8GB)
+            - Curva de aprendizado mais alta
+            - Consome mais recursos do computador
+            """)
+        
+        with col2:
+            st.markdown("""
+            **Recomendado para:**
+            - Desenvolvedores
+            - Projetos mais complexos
+            - Quando precisar de recursos avançados
+            """)
+        
+        st.code("""
+        # Passos para compilar no Android Studio:
+        1. Descompacte o arquivo ZIP do projeto
+        2. Abra o Android Studio
+        3. Selecione "Open an Existing Project"
+        4. Navegue até a pasta do projeto descompactado
+        5. Aguarde a sincronização do Gradle
+        6. Clique em Build > Build Bundle(s) / APK(s) > Build APK(s)
+        7. Aguarde a compilação e clique em "locate" para encontrar o APK
+        """, language="bash")
+        
+        st.markdown("---")
+        
+        # Método 3 - Buildozer
+        st.markdown("### 3. Compilação Direta com Buildozer")
+        
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:
+            st.markdown("""
+            **O que é:** Ferramenta que permite compilar aplicativos Python/Kivy para Android.
+            
+            **Vantagens:**
+            - Linha de comando simples
+            - Automação possível
+            - Menos recursos que o Android Studio
+            
+            **Desvantagens:**
+            - Requer ambiente Linux
+            - Instalação de várias dependências
+            - Pode ter problemas de compatibilidade
+            """)
+        
+        with col2:
+            st.markdown("""
+            **Recomendado para:**
+            - Usuários do Linux
+            - Desenvolvimento em servidor
+            - Quem prefere linha de comando
+            """)
+        
+        st.code("""
+        # Instalação no Ubuntu/Debian:
+        sudo apt update
+        sudo apt install -y git zip unzip openjdk-11-jdk python3-pip autoconf libtool pkg-config
+        sudo apt install -y libncurses5-dev libncursesw5-dev zlib1g-dev
+        sudo pip3 install --upgrade Cython==0.29.33 virtualenv buildozer
+        
+        # Compilar o APK:
+        buildozer -v android debug
+        """, language="bash")
+        
+        st.warning("""
+        **Aviso:** A compilação direta com Buildozer pode exigir configurações adicionais
+        e é recomendada apenas para usuários avançados.
+        """)
+        
+        # Método 4 - Compilar Online com PWA
+        st.markdown("### 4. Progressive Web App (PWA)")
+        
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:
+            st.markdown("""
+            **O que é:** Converter seu site em um PWA que pode ser instalado diretamente do navegador.
+            
+            **Vantagens:**
+            - Instalação direta pelo navegador
+            - Não requer compilação
+            - Atualizações automáticas
+            
+            **Desvantagens:**
+            - Acesso limitado aos recursos do dispositivo
+            - Menos integrado ao sistema operacional
+            - Requer conexão para primeira instalação
+            """)
+        
+        with col2:
+            st.markdown("""
+            **Recomendado para:**
+            - Soluções rápidas
+            - Aplicações simples
+            - Quando APK não é estritamente necessário
+            """)
+        
+        # Botão para ativar PWA
+        if st.button("Transformar em PWA", type="secondary"):
+            st.info("""
+            Para transformar o Sistema Suinocultura em um PWA, adicione um manifesto
+            web e service worker ao seu projeto Streamlit. Um guia detalhado está disponível
+            na documentação.
+            
+            Usuários poderão instalar o PWA diretamente do Chrome/Edge ao acessar o site.
+            """)
+        
+        st.markdown("---")
+        
+        # Seção final com ajuda
+        st.markdown("### Precisa de ajuda?")
+        
+        st.info("""
+        Se você estiver com dificuldades para compilar o APK, entre em contato
+        com a equipe de desenvolvimento ou consulte os recursos disponíveis na 
+        documentação do Android.
+        """)
+            
+        # Botões de ação
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+            if st.button("📖 Documentação", type="secondary"):
+                st.markdown("Acessando documentação...")
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+        with col2:
+            st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+            if st.button("🤔 FAQ", type="secondary"):
+                st.markdown("Exibindo perguntas frequentes...")
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+        with col3:
+            st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+            if st.button("🎬 Tutorial em Vídeo", type="secondary"):
+                st.markdown("Iniciando tutorial em vídeo...")
+            st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Estilos baseados no modo selecionado
+    bg_color = "#1E1E1E" if dark_mode else "#FFFFFF"
+    text_color = "#E0E0E0" if dark_mode else "#333333"
+    code_bg = "#2D2D2D" if dark_mode else "#F5F5F5"
+    accent_color = "#9C27B0" # Roxo primário
+    
+    # CSS personalizado baseado no modo
+    st.markdown(f"""
+    <style>
+        .kivy-container {{
+            background-color: {bg_color};
+            color: {text_color};
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }}
+        .kivy-header {{
+            color: {accent_color};
+            border-bottom: 2px solid {accent_color};
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }}
+        .kivy-code {{
+            background-color: {code_bg};
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            border-left: 3px solid {accent_color};
+        }}
+        .kivy-note {{
+            background-color: {"rgba(156, 39, 176, 0.1)" if dark_mode else "rgba(156, 39, 176, 0.05)"};
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid {accent_color};
+            margin: 15px 0;
+        }}
+        .kivy-button {{
+            background-color: {accent_color};
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 0;
+            cursor: pointer;
+        }}
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Informações sobre o Kivy e o aplicativo móvel
+    st.markdown(f"""
+    <div class="kivy-container">
+        <h3 class="kivy-header">Sobre o Kivy</h3>
+        <p>
+            Kivy é um framework Python de código aberto para o desenvolvimento rápido de aplicativos 
+            que utilizam interfaces de usuário inovadoras, como aplicativos multitoque. O framework é 
+            multiplataforma (Windows, macOS, Linux, Android, iOS) e baseado em OpenGL ES 2.
+        </p>
+        <div class="kivy-note">
+            <strong>Vantagens do Kivy:</strong>
+            <ul>
+                <li>Multiplataforma: execute o mesmo código em várias plataformas.</li>
+                <li>Rápido desenvolvimento: crie protótipos e aplicativos rapidamente.</li>
+                <li>Focado em interfaces gráficas: suporte a multitoque e gestos.</li>
+                <li>Integração com Python: utiliza todas as bibliotecas e ferramentas Python.</li>
+                <li>Linguagem KV: separa a lógica do aplicativo da interface do usuário.</li>
+            </ul>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Estrutura do aplicativo Kivy desenvolvido
+    st.markdown(f"""
+    <div class="kivy-container">
+        <h3 class="kivy-header">Aplicativo Sistema Suinocultura</h3>
+        <p>
+            Foi desenvolvido um aplicativo móvel utilizando Kivy para acesso ao Sistema Suinocultura. 
+            O aplicativo permite que usuários realizem operações básicas de gerenciamento diretamente 
+            em dispositivos móveis, mesmo com conectividade limitada.
+        </p>
+        
+        <h4>Estrutura do Projeto</h4>
+        <div class="kivy-code">
+kivy_app/
+  ├── __init__.py
+  ├── main.py              # Arquivo principal do aplicativo
+  ├── suinocultura.kv      # Definições de interface (linguagem KV)
+  ├── animal_screen.py     # Tela de gerenciamento de animais
+  └── assets/              # Imagens e recursos do aplicativo
+        </div>
+        
+        <h4>Funcionalidades Implementadas</h4>
+        <ul>
+            <li><strong>Autenticação:</strong> Login com matrícula para acesso seguro</li>
+            <li><strong>Menu Principal:</strong> Acesso aos principais módulos do sistema</li>
+            <li><strong>Gestão de Animais:</strong> Cadastro, listagem e edição de animais</li>
+        </ul>
+        
+        <div class="kivy-note">
+            <strong>Nota de Desenvolvimento:</strong> O aplicativo Kivy está em fase inicial de desenvolvimento. 
+            Novas funcionalidades serão adicionadas gradualmente seguindo as prioridades estabelecidas para o sistema.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Como executar o aplicativo
+    st.markdown(f"""
+    <div class="kivy-container">
+        <h3 class="kivy-header">Executando o Aplicativo</h3>
+        
+        <h4>Requisitos</h4>
+        <ul>
+            <li>Python 3.7+</li>
+            <li>Kivy 2.1.0+</li>
+            <li>PIL (Pillow)</li>
+        </ul>
+        
+        <h4>Comandos para Execução</h4>
+        <div class="kivy-code">
+# Instalação das dependências
+pip install kivy pillow
+
+# Executar o aplicativo
+python -m kivy_app.main
+        </div>
+        
+        <h4>Compilando para Android</h4>
+        <p>
+            Para compilar o aplicativo para Android, é necessário utilizar o Buildozer, 
+            uma ferramenta que automatiza o processo de empacotamento do aplicativo Kivy 
+            para Android (e iOS futuramente).
+        </p>
+        
+        <div class="kivy-code">
+# Instalar Buildozer
+pip install buildozer
+
+# Inicializar configuração do Buildozer
+buildozer init
+
+# Editar buildozer.spec conforme necessário
+
+# Compilar para Android
+buildozer android debug
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Exemplos de código
+    st.markdown(f"""
+    <div class="kivy-container">
+        <h3 class="kivy-header">Exemplos de Código</h3>
+        
+        <h4>Exemplo da Tela de Login (Python)</h4>
+        <div class="kivy-code">
+class LoginScreen(Screen):
+    def __init__(self, **kwargs):
+        super(LoginScreen, self).__init__(**kwargs)
+        self.build_interface()
+    
+    def build_interface(self):
+        # Layout principal
+        layout = BoxLayout(orientation='vertical', 
+                        padding=dp(20), spacing=dp(20))
+        
+        # Campos de login
+        self.matricula_input = TextInput(
+            hint_text='Matrícula', 
+            multiline=False, 
+            size_hint_y=None, height=dp(50)
+        )
+        
+        # Botão de login
+        login_button = Button(
+            text='Entrar', 
+            size_hint_y=None, height=dp(50),
+            background_color=get_color_from_hex(ROXO_PRIMARIO)
+        )
+        login_button.bind(on_press=self.login)
+        
+        # Adicionar layout à tela
+        self.add_widget(layout)
+    
+    def login(self, instance):
+        # Lógica de autenticação
+        matricula = self.matricula_input.text.strip()
+        
+        if matricula == "123456":  # Exemplo
+            self.manager.current = 'menu'
+        else:
+            self.status_label.text = "Matrícula não encontrada"
+        </div>
+        
+        <h4>Exemplo da Definição KV para AnimalCard</h4>
+        <div class="kivy-code">
+<AnimalCard@BoxLayout>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: dp(150)
+    padding: dp(10)
+    spacing: dp(5)
+    canvas.before:
+        Color:
+            rgba: get_color_from_hex(BRANCO)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(5)]
+        Color:
+            rgba: get_color_from_hex(ROXO_CLARO)
+        Line:
+            rounded_rectangle: [self.x, self.y, self.width, self.height, dp(5)]
+            width: 1.5
+    
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: dp(30)
+        
+        Label:
+            text: 'ID: 12345'
+            color: get_color_from_hex(ROXO_PRIMARIO)
+            font_size: dp(16)
+            bold: True
+            
+    Label:
+        text: 'Porca - Landrace'
+        color: get_color_from_hex(CINZA_ESCURO)
+        font_size: dp(14)
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Desenvolvimento futuro
+    st.markdown(f"""
+    <div class="kivy-container">
+        <h3 class="kivy-header">Próximos Passos de Desenvolvimento</h3>
+        
+        <h4>Funcionalidades Planejadas</h4>
+        <ul>
+            <li><strong>Módulo de Reprodução:</strong> Registro de cio, inseminação e partos</li>
+            <li><strong>Sincronização Offline:</strong> Trabalho offline com sincronização posterior</li>
+            <li><strong>Escaneamento de QR Code:</strong> Identificação rápida de animais</li>
+            <li><strong>Relatórios Móveis:</strong> Visualização de relatórios críticos em formato móvel</li>
+            <li><strong>Notificações Push:</strong> Alertas para eventos importantes</li>
+        </ul>
+        
+        <h4>Otimizações</h4>
+        <ul>
+            <li>Melhoria de desempenho para dispositivos com recursos limitados</li>
+            <li>Otimização do uso de bateria</li>
+            <li>Adaptação para diferentes tamanhos de tela</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Documentação e recursos
+    st.markdown(f"""
+    <div class="kivy-container">
+        <h3 class="kivy-header">Recursos para Desenvolvimento</h3>
+        
+        <h4>Documentação Oficial</h4>
+        <ul>
+            <li><a href="https://kivy.org/doc/stable/" target="_blank" style="color: {accent_color};">Documentação do Kivy</a></li>
+            <li><a href="https://buildozer.readthedocs.io/" target="_blank" style="color: {accent_color};">Documentação do Buildozer</a></li>
+        </ul>
+        
+        <h4>Tutoriais Recomendados</h4>
+        <ul>
+            <li><a href="https://kivy.org/doc/stable/tutorials/pong.html" target="_blank" style="color: {accent_color};">Tutorial Básico: Criando um jogo Pong</a></li>
+            <li><a href="https://github.com/kivy/kivy/tree/master/examples" target="_blank" style="color: {accent_color};">Exemplos Oficiais do Kivy</a></li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown('''
+    <div style="background-color: #1E1E1E; color: #9C27B0; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; border-left: 5px solid #9C27B0; font-family: 'Courier New', monospace;">
+        <h2 style="margin:0; color: #9C27B0; text-shadow: 0 0 5px rgba(156, 39, 176, 0.3);">📱 Kivy Mobile</h2>
+        <p style="margin-top:0.5rem; color: #BBBBBB;">Ferramentas para desenvolvimento mobile com Kivy</p>
+    </div>
+    ''', unsafe_allow_html=True)
+    
+    # Toggle para modo escuro
+    if 'kivy_dark_mode' not in st.session_state:
+        st.session_state.kivy_dark_mode = False
+    
+    # Definir estilos com base no modo
+    if st.session_state.kivy_dark_mode:
+        # Estilos para modo escuro
+        bg_color = "#2D2D2D"
+        text_color = "#E0E0E0"
+        card_bg = "#3D3D3D"
+        card_title = "#BB86FC"
+        link_color = "#BB86FC"
+        border_color = "#444444"
+        code_bg = "#1E1E1E"
+    else:
+        # Estilos para modo claro
+        bg_color = "#FFFFFF"
+        text_color = "#333333"
+        card_bg = "#f5f5f5"
+        card_title = "#9C27B0"
+        link_color = "#673AB7"
+        border_color = "#DDDDDD"
+        code_bg = "#F8F8F8"
+    
+    # CSS para links e elementos no modo escuro/claro
+    st.markdown(f"""
+    <style>
+        .kivy-dark-mode a {{ color: {link_color} !important; }}
+        .kivy-card {{ 
+            background-color: {card_bg}; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-bottom: 20px; 
+            color: {text_color};
+            border: 1px solid {border_color};
+        }}
+        .kivy-card h4 {{ color: {card_title}; margin-top: 0; }}
+        .kivy-code-block {{ background-color: {code_bg}; padding: 10px; border-radius: 4px; }}
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Toggle para alternar modo escuro
+    mode_col1, mode_col2 = st.columns([4, 1])
+    with mode_col2:
+        if st.toggle("Modo Escuro", value=st.session_state.kivy_dark_mode, key="toggle_dark_mode"):
+            st.session_state.kivy_dark_mode = True
+        else:
+            st.session_state.kivy_dark_mode = False
+    
+    # Dividir em colunas
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        st.subheader("Informações do Kivy")
+        
+        # Verificar a instalação do Kivy
+        try:
+            import kivy
+            kivy_version = kivy.__version__
+            kivy_status = "Instalado"
+            kivy_color = "#4CAF50" if not st.session_state.kivy_dark_mode else "#81C784"
+        except ImportError:
+            kivy_version = "N/A"
+            kivy_status = "Não Instalado"
+            kivy_color = "#F44336" if not st.session_state.kivy_dark_mode else "#E57373"
+        
+        # Exibir informações sobre o Kivy
+        st.markdown(f"""
+        <div class="kivy-dark-mode kivy-card">
+            <h4>Status do Kivy</h4>
+            <p><strong>Versão:</strong> {kivy_version}</p>
+            <p><strong>Status:</strong> <span style='color: {kivy_color};'>{kivy_status}</span></p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Documentação
+        st.markdown(f"""
+        <div class="kivy-dark-mode kivy-card">
+            <h4>Documentação do Kivy</h4>
+            <p>O Kivy é uma biblioteca Python para desenvolvimento de aplicações multi-touch, compatível com várias plataformas (Windows, MacOS, Linux, Android, iOS).</p>
+            <ul>
+                <li><a href='https://kivy.org/doc/stable/' target='_blank'>Documentação Oficial</a></li>
+                <li><a href='https://kivy.org/doc/stable/gettingstarted/intro.html' target='_blank'>Guia de Introdução</a></li>
+                <li><a href='https://kivy.org/doc/stable/examples/index.html' target='_blank'>Exemplos</a></li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.subheader("Desenvolvimento Mobile")
+        
+        # Explicar como usar o Kivy para desenvolvimento mobile
+        st.markdown(f"""
+        <div class="kivy-dark-mode kivy-card">
+            <h4>Criação de Aplicações Mobile</h4>
+            <p>Com o Kivy, você pode criar aplicações mobile multiplataforma usando Python:</p>
+            <ol>
+                <li>Desenvolva sua interface utilizando a linguagem Kv ou Python</li>
+                <li>Teste sua aplicação localmente</li>
+                <li>Compile para Android usando Buildozer ou para iOS usando o Kivy-iOS</li>
+            </ol>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Adicionar exemplos de código
+        with st.expander("Exemplo Básico do Kivy", expanded=True):
+            st.code('''
+import kivy
+from kivy.app import App
+from kivy.uix.label import Label
+
+class SuinoculturaApp(App):
+    def build(self):
+        return Label(text='Sistema Suinocultura Mobile')
+
+if __name__ == '__main__':
+    SuinoculturaApp().run()
+''', language="python")
+        
+        with st.expander("Exemplo com Interface Mais Complexa"):
+            st.code('''
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+
+class SuinoculturaInterface(BoxLayout):
+    def __init__(self, **kwargs):
+        super(SuinoculturaInterface, self).__init__(**kwargs)
+        self.orientation = 'vertical'
+        self.padding = 10
+        self.spacing = 10
+        
+        # Título
+        self.add_widget(Label(
+            text='Sistema Suinocultura Mobile',
+            size_hint=(1, 0.2),
+            font_size=24
+        ))
+        
+        # Botões de navegação
+        btns = [
+            'Cadastro de Animais', 
+            'Reprodução', 
+            'Crescimento', 
+            'Saúde', 
+            'Relatórios'
+        ]
+        
+        for btn_text in btns:
+            btn = Button(
+                text=btn_text,
+                size_hint=(1, 0.1),
+                background_color=(0.3, 0.6, 0.9, 1)
+            )
+            btn.bind(on_press=self.button_pressed)
+            self.add_widget(btn)
+    
+    def button_pressed(self, instance):
+        print(f'Botão pressionado: {instance.text}')
+
+class SuinoculturaApp(App):
+    def build(self):
+        return SuinoculturaInterface()
+
+if __name__ == '__main__':
+    SuinoculturaApp().run()
+''', language="python")
+    
+    # Seção de criação de aplicativo mobile
+    st.markdown("---")
+    st.subheader("Ferramentas de Desenvolvimento Mobile")
+    
+    # Configuração do Buildozer
+    with st.expander("Configuração do Buildozer para Android", expanded=False):
+        st.markdown(f"""
+        <div class="kivy-dark-mode kivy-card">
+            <h4>Buildozer</h4>
+            <p>O Buildozer é uma ferramenta que automatiza o processo de compilação de aplicativos Kivy para Android e iOS.</p>
+            <p>Para configurar, crie um arquivo <code>buildozer.spec</code> na raiz do seu projeto.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.code('''
+[app]
+# Nome do seu aplicativo
+title = Suinocultura Mobile
+
+# Identificador único do pacote
+package.name = suinoculturaapp
+package.domain = com.suinocultura
+
+# Versão do aplicativo
+version = 1.0
+
+# Requisitos (dependências)
+requirements = python3,kivy
+
+# Orientação da tela (portrait, landscape)
+orientation = portrait
+
+# Ícone do aplicativo
+icon.filename = %(source.dir)s/icon.png
+
+# Arquivos a serem incluídos no pacote
+source.include_exts = py,png,jpg,kv,atlas
+
+[buildozer]
+# Android settings
+android.permissions = INTERNET
+''', language="ini")
+    
+    # Interface para experimentação do Kivy
+    st.markdown("---")
+    st.subheader("Área de Experimentação")
+    
+    # Editor de código simples para experimentação - estilizado com base no modo
+    code_background = code_bg if st.session_state.kivy_dark_mode else "#f5f5f5"
+    text_color_code = "#E0E0E0" if st.session_state.kivy_dark_mode else "#333333"
+    
+    # Aplicar estilo CSS em tempo real ao container do editor de código
+    if st.session_state.kivy_dark_mode:
+        st.markdown("""
+        <style>
+            .stTextArea textarea {
+                background-color: #1E1E1E !important;
+                color: #E0E0E0 !important;
+                border: 1px solid #444444 !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+    
+    # Editor de código simples para experimentação
+    kivy_code = st.text_area(
+        "Experimente o código Kivy aqui (não executa no navegador, apenas para referência)",
+        height=200,
+        value='''
+from kivy.app import App
+from kivy.uix.button import Button
+
+class TestApp(App):
+    def build(self):
+        return Button(text='Olá de Kivy',
+                      size_hint=(0.5, 0.5),
+                      pos_hint={'center_x': 0.5, 'center_y': 0.5})
+
+if __name__ == '__main__':
+    TestApp().run()
+''')
+    
+    # Dicas e recursos adicionais
+    st.markdown("---")
+    st.subheader("Dicas e Recursos")
+    
+    st.markdown(f"""
+    <div class="kivy-dark-mode kivy-card">
+        <h4>Como integrar o Sistema Suinocultura com Kivy</h4>
+        <p>Para criar uma versão mobile do Sistema Suinocultura:</p>
+        <ol>
+            <li>Crie uma interface Kivy que se comunique com a API do sistema</li>
+            <li>Defina as telas principais para as funcionalidades essenciais</li>
+            <li>Implemente a comunicação HTTP para acessar os dados remotamente</li>
+            <li>Use o Buildozer para compilar a aplicação para Android</li>
+        </ol>
+    </div>
+    
+    <div class="kivy-dark-mode kivy-card">
+        <h4>Recursos para Aprendizado</h4>
+        <ul>
+            <li><a href='https://kivy.org/doc/stable/tutorials/pong.html' target='_blank'>Tutorial: Criando um jogo de Pong</a></li>
+            <li><a href='https://github.com/kivy/kivy/tree/master/examples' target='_blank'>Exemplos oficiais do Kivy</a></li>
+            <li><a href='https://kivy.org/doc/stable/api-kivy.html' target='_blank'>API do Kivy</a></li>
+            <li><a href='https://buildozer.readthedocs.io/en/latest/' target='_blank'>Documentação do Buildozer</a></li>
+        </ul>
+    </div>
+    
+    <div class="kivy-dark-mode kivy-card" style="margin-top: 20px; text-align: center;">
+        <p style="font-style: italic;">O modo escuro facilita o desenvolvimento prolongado, reduzindo o cansaço visual.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Aba de Componentes Streamlit
+with tab7:
+    st.markdown('<div class="dev-section"><h2>Gerenciamento de Componentes Streamlit</h2></div>', unsafe_allow_html=True)
+    
+    # Subtabs para a aba de componentes
+    comp_tab1, comp_tab2 = st.tabs(["📦 Componentes Instalados", "➕ Instalar Novo Componente"])
+    
+    with comp_tab1:
+        st.markdown("### Componentes Streamlit Instalados")
+        st.markdown("Abaixo estão os componentes Streamlit atualmente instalados no sistema:")
+        
+        # Obter lista de pacotes instalados via pip freeze
+        try:
+            import subprocess
+            import pkg_resources
+            
+            # Filtrar apenas os pacotes que contêm 'streamlit' no nome
+            streamlit_packages = []
+            for pkg in pkg_resources.working_set:
+                if 'streamlit' in pkg.key.lower() and pkg.key != 'streamlit':
+                    streamlit_packages.append({
+                        "nome": pkg.key,
+                        "versao": pkg.version,
+                        "descricao": pkg.project_name
+                    })
+            
+            if streamlit_packages:
+                # Criar cards para cada componente
+                for pkg in streamlit_packages:
+                    st.markdown(f"""
+                    <div class="component-card">
+                        <div class="component-title">{pkg['nome']}</div>
+                        <div class="component-version">Versão: {pkg['versao']}</div>
+                        <div class="component-desc">{pkg['descricao']}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.info("Não foram encontrados componentes adicionais do Streamlit instalados.")
+                st.markdown("""
+                ### O que são Componentes Streamlit?
+                
+                Os componentes do Streamlit são extensões que adicionam funcionalidades extras
+                à sua aplicação Streamlit. Eles podem incluir recursos como:
+                
+                - Gráficos e visualizações avançadas
+                - Elementos de interface personalizados
+                - Integrações com APIs externas
+                - Recursos especializados para áreas específicas
+                
+                Para instalar um componente, vá para a aba "➕ Instalar Novo Componente".
+                """)
+        except Exception as e:
+            st.error(f"Erro ao obter a lista de componentes: {str(e)}")
+    
+    with comp_tab2:
+        st.markdown("### Instalar Novo Componente Streamlit")
+        st.markdown("""
+        Aqui você pode instalar componentes adicionais para o Streamlit.
+        Os componentes são normalmente instalados via pip e estão disponíveis
+        no [Streamlit Components Directory](https://streamlit.io/components).
+        """)
+        
+        # Formulário para instalação de novos componentes
+        with st.form("instalar_componente_form"):
+            nome_componente = st.text_input("Nome do Componente", 
+                                          placeholder="Ex: streamlit-echarts, streamlit-aggrid")
+            
+            versao = st.text_input("Versão (opcional)", 
+                                 placeholder="Ex: 0.4.0 (deixe em branco para a versão mais recente)")
+            
+            st.markdown("### Opções Avançadas")
+            
+            opcoes_extras = st.multiselect("Opções de Instalação", 
+                                        ["--upgrade", "--force-reinstall", "--no-deps"],
+                                        default=[])
+            
+            submitted = st.form_submit_button("Instalar Componente")
+            
+            if submitted:
+                if nome_componente:
+                    try:
+                        # Preparar comando pip
+                        comando = f"pip install {nome_componente}"
+                        
+                        # Adicionar versão específica, se fornecida
+                        if versao:
+                            comando += f"=={versao}"
+                        
+                        # Adicionar opções extras
+                        for opt in opcoes_extras:
+                            comando += f" {opt}"
+                        
+                        # Exibir comando que será executado
+                        st.code(comando)
+                        
+                        # Executar comando pip install
+                        import subprocess
+                        process = subprocess.Popen(comando.split(), 
+                                                stdout=subprocess.PIPE, 
+                                                stderr=subprocess.PIPE)
+                        stdout, stderr = process.communicate()
+                        
+                        if process.returncode == 0:
+                            st.success(f"Componente {nome_componente} instalado com sucesso!")
+                            st.markdown("### Saída da Instalação:")
+                            st.code(stdout.decode())
+                            
+                            # Instruções de uso após instalação
+                            st.markdown(f"""
+                            ### Como usar o componente
+                            
+                            Para usar o componente em suas páginas, normalmente você precisa importá-lo:
+                            
+                            ```python
+                            import {nome_componente.replace('-', '_')}
+                            ```
+                            
+                            Consulte a documentação específica do componente para instruções detalhadas.
+                            """)
+                            
+                            # Botão para reiniciar o Streamlit (necessário para que o novo componente seja reconhecido)
+                            if st.button("Reiniciar aplicação para aplicar alterações"):
+                                st.rerun()
+                        else:
+                            st.error("Erro ao instalar o componente.")
+                            st.markdown("### Erro:")
+                            st.code(stderr.decode())
+                    except Exception as e:
+                        st.error(f"Erro ao instalar o componente: {str(e)}")
+                else:
+                    st.warning("Por favor, insira o nome do componente.")
+        
+        # Informações adicionais
+        st.markdown("---")
+        st.markdown("""
+        ### Componentes Populares do Streamlit
+        
+        Aqui estão alguns componentes populares do Streamlit que você pode querer instalar:
+        
+        | Nome do Componente | Descrição | Comando de Instalação |
+        |-------------------|-----------|---------------------|
+        | streamlit-echarts | Gráficos interativos com ECharts | `streamlit-echarts` |
+        | streamlit-aggrid | Tabelas interativas e avançadas | `streamlit-aggrid` |
+        | streamlit-folium | Mapas interativos | `streamlit-folium` |
+        | streamlit-drawable-canvas | Canvas para desenho livre | `streamlit-drawable-canvas` |
+        | streamlit-javascript | Integração com JavaScript | `streamlit-javascript` |
+        | streamlit-lottie | Animações Lottie | `streamlit-lottie` |
+        | streamlit-pandas-profiling | Análise exploratória de dados | `streamlit-pandas-profiling` |
+        | streamlit-plotly-events | Eventos interativos para gráficos Plotly | `streamlit-plotly-events` |
+        
+        Para mais componentes, visite a [galeria oficial de componentes do Streamlit](https://streamlit.io/components).
+        """)
 
 # Rodapé
 st.markdown("---")
