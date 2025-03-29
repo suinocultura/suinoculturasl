@@ -3,7 +3,7 @@ import streamlit as st
 # Adicionar import do utils para check_permission
 from utils import check_permission
 
-st.set_page_config(page_title="SAÚDE", page_icon="💉", layout="wide")
+st.set_page_config(page_title="SAÚDE_STATS", page_icon="💉", layout="wide")
 
 # Initialize session state for authentication
 if 'authenticated' not in st.session_state:
@@ -27,12 +27,12 @@ if "authenticated" not in st.session_state or not st.session_state.authenticated
     st.warning("Você precisa estar autenticado para acessar esta página.")
     st.stop()
 
-st.title("🔹 SAÚDE")
+st.title("🔹 SAÚDE_STATS")
 st.write("Acesse as funcionalidades de saúde animal através do menu lateral")
 
 st.write("""
 ## Módulos de Saúde
-         
+
 Esta seção contém ferramentas para o gerenciamento da saúde do rebanho, incluindo:
 
 - Vacinação
@@ -53,13 +53,13 @@ with col1:
     ### Vacinação
     Controle e registro de vacinações
     """)
-    
+
 with col2:
     st.info("""
     ### Mortalidade
     Registro e análise de mortalidade
     """)
-    
+
 with col3:
     st.info("""
     ### Peso e Idade
