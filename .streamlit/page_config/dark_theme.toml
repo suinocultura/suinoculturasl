@@ -1,0 +1,7 @@
+[theme]
+primaryColor = "#4F8A10"         # Verde para o tema de suinocultura
+backgroundColor = "#262730"      # Fundo escuro
+secondaryBackgroundColor = "#0E1117"  # Cor secundária escura
+textColor = "#FAFAFA"           # Texto claro para contraste com o fundo escuro
+font = "sans serif"
+base = "dark"                   # Define o tema base como escuro
