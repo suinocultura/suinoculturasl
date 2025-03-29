@@ -62,11 +62,40 @@ def detect_name_similarity_conflicts(pages):
     """
     # Extrair nomes das páginas (descartando o prefixo numérico e a extensão)
     name_map = defaultdict(list)
+    emoji_map = defaultdict(list)
     
     for page in pages:
         # Remove prefixo numérico e extensão
         name = re.sub(r"^\d+[_\-]", "", page)
         name = os.path.splitext(name)[0]
+        
+        # Armazena a versão original (apenas sem prefixo e extensão) para verificação de emojis
+        original_name = name
+        
+        # Verifica se contém emojis ou caracteres especiais Unicode
+        emoji_pattern = re.compile(
+            "["
+            "\U0001F600-\U0001F64F"  # emoticons
+            "\U0001F300-\U0001F5FF"  # símbolos e pictogramas
+            "\U0001F680-\U0001F6FF"  # transporte e símbolos de mapas
+            "\U0001F700-\U0001F77F"  # alchemical symbols
+            "\U0001F780-\U0001F7FF"  # Geometric Shapes
+            "\U0001F800-\U0001F8FF"  # Supplemental Arrows-C
+            "\U0001F900-\U0001F9FF"  # Supplemental Symbols and Pictographs
+            "\U0001FA00-\U0001FA6F"  # Chess Symbols
+            "\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
+            "\u2702-\u27B0"          # Dingbats
+            "\u24C2-\u2BEF"          # Miscellaneous Symbols
+            "]+", flags=re.UNICODE
+        )
+        
+        # Detectar páginas que contêm emojis para verificação especial
+        if emoji_pattern.search(original_name):
+            # Extrair apenas o primeiro emoji
+            emoji_match = emoji_pattern.search(original_name)
+            if emoji_match:
+                first_emoji = emoji_match.group(0)
+                emoji_map[first_emoji].append(page)
         
         # Remove emojis e caracteres especiais (mais agressivamente)
         name = re.sub(r"[^\w\s]", "", name)
@@ -81,6 +110,14 @@ def detect_name_similarity_conflicts(pages):
     
     # Filtrar para manter apenas nomes com múltiplas páginas
     conflicts = {k: v for k, v in name_map.items() if len(v) > 1}
+    
+    # Adicionar conflitos de emojis
+    emoji_conflicts = {k: v for k, v in emoji_map.items() if len(v) > 1}
+    for emoji, pages_with_emoji in emoji_conflicts.items():
+        # Criar uma chave única para este grupo de conflitos de emoji
+        key = f"emoji_{emoji}"
+        conflicts[key] = pages_with_emoji
+    
     return conflicts
 
 def detect_backup_files(pages):
@@ -112,11 +149,40 @@ def detect_backup_files(pages):
         r"-draft\.py$",
         r"_novo\.py$",
         r"_new\.py$",
-        r"_bak_.*\.py$"  # Qualquer arquivo com _bak_ no nome
+        r"_bak_.*\.py$",  # Qualquer arquivo com _bak_ no nome
+        r"_bak\.py$",     # Arquivos terminando com _bak.py
+        r"\.py\.bak$",    # Arquivos terminando com .py.bak
+        r"\.py~$",        # Arquivos terminando com .py~
+        r"#.*#\.py$"      # Arquivos com # no nome (comuns em editores como Emacs)
     ]
     
-    # Identificar arquivos com padrão 98_bak_Nome.py
-    explicit_backup_pattern = re.compile(r'^\d+_bak[_\-].*\.py$')
+    # Identificar arquivos com padrões explícitos de backup
+    explicit_backup_patterns = [
+        re.compile(r'^\d+_bak[_\-].*\.py$'),  # 98_bak_Nome.py
+        re.compile(r'.*_bak_\d+\.py$'),       # Nome_bak_123.py
+        re.compile(r'.*\.py\.swp$'),          # Arquivo.py.swp (Vim swap)
+        re.compile(r'.*\.py\.swo$'),          # Arquivo.py.swo (Vim swap)
+        re.compile(r'\.#.*\.py$'),            # .#Arquivo.py (Emacs temp)
+        re.compile(r'.*_bkp.*\.py$')          # Qualquer coisa com _bkp
+    ]
+    
+    # Identificar arquivos com nomes duplicados (diff apenas por case ou caracteres especiais)
+    lowercase_map = {}
+    duplicates_by_case = []
+    
+    for page in pages:
+        # Criar uma versão normalizada do nome (lowercase, sem especiais)
+        normalized = page.lower()
+        normalized = re.sub(r'[^\w\.]', '', normalized)
+        
+        if normalized in lowercase_map:
+            # Já existe um arquivo com este mesmo nome normalizado
+            original = lowercase_map[normalized]
+            # Se não são idênticos, um deles é potencialmente um backup
+            if original != page and page not in duplicates_by_case:
+                duplicates_by_case.append(page)
+        else:
+            lowercase_map[normalized] = page
     
     backups = []
     for page in pages:
@@ -125,11 +191,17 @@ def detect_backup_files(pages):
             if re.search(pattern, page):
                 backups.append(page)
                 break
-                
-        # Verificar padrão explícito de backup
-        if explicit_backup_pattern.match(page):
-            if page not in backups:
-                backups.append(page)
+        
+        # Se ainda não foi adicionado, verificar padrões explícitos
+        if page not in backups:
+            for pattern in explicit_backup_patterns:
+                if pattern.match(page):
+                    backups.append(page)
+                    break
+        
+        # Verificar se é uma duplicata por case
+        if page not in backups and page in duplicates_by_case:
+            backups.append(page)
     
     return backups
 
@@ -200,13 +272,14 @@ def suggest_backup_fixes(backups):
     
     return suggestions
 
-def fix_conflicts(directory="pages", apply_fixes=False):
+def fix_conflicts(directory="pages", apply_fixes=False, move_conflicts=False):
     """
     Identifica e opcionalmente corrige conflitos nas páginas
     
     Args:
         directory (str): Diretório das páginas
         apply_fixes (bool): Se True, aplica as correções sugeridas
+        move_conflicts (bool): Se True, move arquivos conflitantes para o diretório de backup em vez de renomeá-los
         
     Returns:
         dict: Resumo das ações realizadas
@@ -217,7 +290,7 @@ def fix_conflicts(directory="pages", apply_fixes=False):
     
     # Criar diretório de backup se não existir
     backup_dir = "pages_backup"
-    if apply_fixes and not os.path.exists(backup_dir):
+    if (apply_fixes or move_conflicts) and not os.path.exists(backup_dir):
         os.makedirs(backup_dir)
     
     # Verificar conflitos
@@ -241,28 +314,52 @@ def fix_conflicts(directory="pages", apply_fixes=False):
         # Corrigir conflitos de prefixo
         for old_name, new_name in prefix_fixes.items():
             old_path = os.path.join(directory, old_name)
-            new_path = os.path.join(directory, new_name)
             
-            try:
-                shutil.move(old_path, new_path)
-                actions_taken["prefix_conflicts"][old_name] = f"Renomeado para {new_name}"
-                print(f"Renomeado: {old_name} -> {new_name}")
-            except Exception as e:
-                actions_taken["prefix_conflicts"][old_name] = f"Erro ao renomear: {str(e)}"
-                print(f"Erro ao renomear {old_name}: {str(e)}")
+            if move_conflicts:
+                # Mover para diretório de backup se solicitado
+                new_path = os.path.join(backup_dir, old_name)
+                try:
+                    shutil.move(old_path, new_path)
+                    actions_taken["prefix_conflicts"][old_name] = f"Movido para {backup_dir}/{old_name}"
+                    print(f"Movido: {old_name} -> {backup_dir}/{old_name}")
+                except Exception as e:
+                    actions_taken["prefix_conflicts"][old_name] = f"Erro ao mover: {str(e)}"
+                    print(f"Erro ao mover {old_name}: {str(e)}")
+            else:
+                # Caso contrário, renomear no mesmo diretório
+                new_path = os.path.join(directory, new_name)
+                try:
+                    shutil.move(old_path, new_path)
+                    actions_taken["prefix_conflicts"][old_name] = f"Renomeado para {new_name}"
+                    print(f"Renomeado: {old_name} -> {new_name}")
+                except Exception as e:
+                    actions_taken["prefix_conflicts"][old_name] = f"Erro ao renomear: {str(e)}"
+                    print(f"Erro ao renomear {old_name}: {str(e)}")
         
         # Corrigir conflitos de nomes similares
         for old_name, new_name in name_fixes.items():
             old_path = os.path.join(directory, old_name)
-            new_path = os.path.join(directory, new_name)
             
-            try:
-                shutil.move(old_path, new_path)
-                actions_taken["name_conflicts"][old_name] = f"Renomeado para {new_name}"
-                print(f"Renomeado: {old_name} -> {new_name}")
-            except Exception as e:
-                actions_taken["name_conflicts"][old_name] = f"Erro ao renomear: {str(e)}"
-                print(f"Erro ao renomear {old_name}: {str(e)}")
+            if move_conflicts:
+                # Mover para diretório de backup se solicitado
+                new_path = os.path.join(backup_dir, old_name)
+                try:
+                    shutil.move(old_path, new_path)
+                    actions_taken["name_conflicts"][old_name] = f"Movido para {backup_dir}/{old_name}"
+                    print(f"Movido: {old_name} -> {backup_dir}/{old_name}")
+                except Exception as e:
+                    actions_taken["name_conflicts"][old_name] = f"Erro ao mover: {str(e)}"
+                    print(f"Erro ao mover {old_name}: {str(e)}")
+            else:
+                # Caso contrário, renomear no mesmo diretório
+                new_path = os.path.join(directory, new_name)
+                try:
+                    shutil.move(old_path, new_path)
+                    actions_taken["name_conflicts"][old_name] = f"Renomeado para {new_name}"
+                    print(f"Renomeado: {old_name} -> {new_name}")
+                except Exception as e:
+                    actions_taken["name_conflicts"][old_name] = f"Erro ao renomear: {str(e)}"
+                    print(f"Erro ao renomear {old_name}: {str(e)}")
         
         # Tratar arquivos de backup
         for backup_file in backup_files:
@@ -351,12 +448,13 @@ def main():
     parser = argparse.ArgumentParser(description="Verificar e corrigir problemas de compatibilidade nas páginas Streamlit")
     parser.add_argument("--directory", "-d", default="pages", help="Diretório contendo as páginas Streamlit")
     parser.add_argument("--fix", "-f", action="store_true", help="Aplicar correções sugeridas")
+    parser.add_argument("--move-conflicts", "-m", action="store_true", help="Mover arquivos conflitantes para diretório de backup em vez de renomeá-los")
     parser.add_argument("--quiet", "-q", action="store_true", help="Modo silencioso (apenas erros)")
     
     args = parser.parse_args()
     
     # Executar verificação
-    summary = fix_conflicts(directory=args.directory, apply_fixes=args.fix)
+    summary = fix_conflicts(directory=args.directory, apply_fixes=args.fix, move_conflicts=args.move_conflicts)
     
     # Imprimir resumo
     if not args.quiet:
