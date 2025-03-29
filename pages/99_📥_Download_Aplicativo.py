@@ -4,6 +4,7 @@ import os
 import sys
 import json
 import datetime
+import importlib.util
 
 # Adicionar diretório raiz ao path para importar utils
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -601,6 +602,37 @@ if st.session_state.show_github_form:
             
             save_credentials = st.checkbox("Salvar credenciais para uso futuro", value=True)
             
+            # Opção para selecionar quais arquivos enviar
+            st.markdown("### Opções de Envio")
+            upload_option = st.radio(
+                "Selecione como deseja enviar os arquivos:",
+                ["Enviar apenas arquivos modificados", "Enviar todos os arquivos"],
+                index=0,
+                horizontal=True,
+                help="Escolha enviar apenas os arquivos modificados (mais rápido) ou todos os arquivos (mais completo)"
+            )
+            only_modified = upload_option == "Enviar apenas arquivos modificados"
+            
+            # Opção para tratar conflitos
+            conflict_option = st.radio(
+                "Como tratar conflitos de página:",
+                ["Renomear arquivos conflitantes", "Mover arquivos conflitantes para backup"],
+                index=0,
+                horizontal=True,
+                help="Escolha como resolver problemas de conflitos entre nomes de páginas"
+            )
+            move_conflicts = conflict_option == "Mover arquivos conflitantes para backup"
+            
+            if move_conflicts:
+                st.success("Em caso de conflitos, os arquivos serão movidos para o diretório 'pages_backup' em vez de apenas renomeá-los. Isso evita problemas persistentes de duplicação no Streamlit Cloud.")
+            else:
+                st.info("Arquivos conflitantes serão renomeados mantendo-os no diretório 'pages', permitindo que continuem disponíveis na navegação.")
+            
+            if not only_modified:
+                st.info("Todos os arquivos serão enviados para o GitHub, mesmo os que não foram modificados. Isso garante um repositório completo, mas pode levar mais tempo.")
+            else:
+                st.success("Apenas arquivos modificados serão enviados, tornando o processo mais rápido. Ideal para atualizações incrementais.")
+            
             col_submit, col_cancel = st.columns([3, 1])
             
             with col_submit:
@@ -616,12 +648,38 @@ if st.session_state.show_github_form:
                 if not username or not token:
                     st.error("Por favor, preencha o usuário e token do GitHub")
                 else:
-                    # Opção para enviar apenas arquivos modificados
-                    only_modified = st.checkbox("Enviar apenas arquivos modificados", value=True,
-                                            help="Verifica quais arquivos foram modificados em relação à versão no GitHub e envia apenas esses")
-                    
                     with st.spinner("Enviando arquivos para o GitHub..."):
                         
+                        # Antes do deploy, executar verificação de compatibilidade se move_conflicts estiver ativo
+                        if move_conflicts:
+                            try:
+                                # Importar o módulo de verificação de compatibilidade
+                                compat_spec = importlib.util.spec_from_file_location("check_pages_compatibility", "check_pages_compatibility.py")
+                                compat_module = importlib.util.module_from_spec(compat_spec)
+                                sys.modules["check_pages_compatibility"] = compat_module
+                                compat_spec.loader.exec_module(compat_module)
+                                
+                                # Executar a verificação com a opção de mover conflitos
+                                compat_module.fix_conflicts(apply_fixes=True, move_conflicts=True)
+                                st.info("Verificação de conflitos concluída. Arquivos problemáticos foram movidos para 'pages_backup'.")
+                            except Exception as compat_error:
+                                st.warning(f"Não foi possível executar a verificação de compatibilidade: {str(compat_error)}")
+                        
+                        # Preparar pacote com a opção de move_conflicts
+                        try:
+                            prep_spec = importlib.util.spec_from_file_location("prepare_streamlit_cloud", "prepare_streamlit_cloud.py")
+                            prep_module = importlib.util.module_from_spec(prep_spec)
+                            sys.modules["prepare_streamlit_cloud"] = prep_module
+                            prep_spec.loader.exec_module(prep_module)
+                            
+                            # Criar o pacote com a opção apropriada
+                            if move_conflicts:
+                                prep_module.main(["prepare_streamlit_cloud.py", "--move-conflicts"])
+                            else:
+                                prep_module.main(["prepare_streamlit_cloud.py"])
+                        except Exception as prep_error:
+                            st.warning(f"Não foi possível preparar o pacote de deploy com opções personalizadas: {str(prep_error)}")
+                            
                         success, message = github_module.deploy_to_github(
                             username=username,
                             token=token,
@@ -704,14 +762,17 @@ with st.expander("Instruções para usar o arquivo baixado", expanded=True):
     2. **Normaliza arquivos com emojis** que podem causar problemas de navegação
     3. **Remove arquivos de backup duplicados** que geram StreamlitAPIException
     4. **Verifica estrutura de arquivos** para garantir compatibilidade total
+    5. **Detecta conflitos de case-insensitive** que causam problemas no Streamlit Cloud
+    6. **Reconhece arquivos temporários ocultos** criados por editores de código
     
     Se mesmo assim você encontrar erros durante o deploy:
     
-    1. **Execute check_pages_compatibility.py**: `python check_pages_compatibility.py --apply` para verificar e corrigir manualmente conflitos
-    2. **Verifique as secrets**: Configure corretamente as credenciais em Settings > Secrets
-    3. **Confirme dependências**: Certifique-se que o `requirements.txt` está completo
-    4. **Use o pacote mais recente**: Se necessário, volte ao sistema original e gere um novo pacote de deploy
-    5. **Consulte o INSTRUCOES_DEPLOY.txt**: Contém soluções específicas para os problemas mais comuns
+    1. **Execute check_pages_compatibility.py**: Use `python check_pages_compatibility.py --fix` para renomear arquivos conflitantes
+    2. **Use a opção de mover conflitos**: `python check_pages_compatibility.py --fix --move-conflicts` para mover arquivos com conflitos persistentes
+    3. **Gere um novo pacote**: `python prepare_streamlit_cloud.py --move-conflicts` para garantir a resolução de todos os conflitos
+    4. **Verifique as secrets**: Configure corretamente as credenciais em Settings > Secrets
+    5. **Confirme dependências**: Certifique-se que o `requirements.txt` está completo
+    6. **Consulte o INSTRUCOES_DEPLOY.txt e README_DEPLOY.md**: Contém soluções específicas para os problemas mais comuns
     
     ### Como configurar o Firebase e Firestore:
     
