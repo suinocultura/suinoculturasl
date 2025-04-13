@@ -1,188 +1,170 @@
-# Guia de Deployment - Sistema Suinocultura
+# Instruções de Deploy no Firebase
 
-Este guia contém instruções detalhadas para fazer o deploy do Sistema Suinocultura em diferentes plataformas.
+Este documento descreve como configurar e realizar o deploy do Sistema Suinocultura no Firebase Hosting.
 
-## Deploy no Streamlit Community Cloud
+## Pré-requisitos
 
-### Requisitos
-- Conta no GitHub (gratuita)
-- Conta no Streamlit Community Cloud (gratuita)
+1. Uma conta do Google para acessar o Firebase
+2. Node.js instalado em sua máquina
+3. Acesso à linha de comando
 
-### Instruções para o Deploy
+## Passo 1: Configurar o Projeto no Firebase
 
-#### Método 1: Deploy Automatizado (Recomendado)
+1. Acesse [console.firebase.google.com](https://console.firebase.google.com/)
+2. Clique em "Adicionar projeto"
+3. Dê o nome "suinocultura-app" ao seu projeto (ou outro nome de sua escolha)
+4. Siga as instruções para criar o projeto
+5. Quando solicitado, ative o Google Analytics (opcional)
 
-1. Acesse a página "📥 Download Aplicativo" no sistema
-2. Clique em "ENVIAR DIRETAMENTE PARA O GITHUB"
-3. Preencha as credenciais do GitHub (nome de usuário e token)
-4. Selecione "Enviar apenas arquivos modificados" se quiser atualizar somente arquivos alterados
-5. Clique em "Enviar para o GitHub"
-6. Use o link fornecido para implantar no Streamlit Cloud
+## Passo 2: Configurar o Firebase Hosting
 
-#### Método 2: Deploy Manual
+1. No console do Firebase, navegue até o projeto criado
+2. No menu lateral, clique em "Hosting"
+3. Clique em "Começar"
+4. Siga as instruções para configurar o Firebase Hosting
 
-1. Baixe o pacote `suinocultura_cloud_deploy_YYYYMMDD.zip` da página "📥 Download Aplicativo"
-2. Extraia o conteúdo do arquivo ZIP
-3. Crie um novo repositório no GitHub
-4. Faça upload de todos os arquivos extraídos para o repositório
-5. Acesse o [Streamlit Community Cloud](https://streamlit.io)
-6. Faça login com sua conta GitHub
-7. Vá para "Your apps" e clique em "New app"
-8. Selecione o repositório criado, mantenha "app.py" no Main file path
-9. Configure os secrets nas configurações do aplicativo conforme o arquivo `.streamlit/secrets.toml.example`
+## Passo 3: Instalar e Configurar as Ferramentas do Firebase
 
-### Solução de Problemas no Streamlit Cloud
+**IMPORTANTE**: O processo de autenticação no Firebase requer um navegador para interação. No ambiente Replit, isso não é possível diretamente. Recomendamos realizar a autenticação no Firebase em seu computador local e depois usar o token gerado no Replit.
 
-#### Verificação Automática de Compatibilidade
+### Opção 1: Autenticação em ambiente local
 
-O pacote mais recente para Streamlit Cloud inclui verificação automática avançada de compatibilidade que é executada durante a geração do pacote. Esta verificação:
-
-1. **Detecta e corrige conflitos de nomenclatura**: Identifica e resolve problemas com nomes de páginas
-2. **Normaliza emojis e caracteres especiais**: Evita problemas com caracteres que podem causar erros no navegador
-3. **Remove arquivos temporários e de backup**: Elimina arquivos duplicados ou desnecessários
-4. **Verifica metadados das páginas**: Analisa configurações em .streamlit/pages.toml em busca de conflitos
-5. **Organiza a estrutura de diretórios**: Garante que a estrutura seja compatível com o Streamlit Cloud
-
-#### Verificação Manual de Problemas
-
-Se mesmo assim você encontrar erros durante o deploy, verifique:
-
-1. **Configuração de porta**: O Streamlit Cloud usa a porta 8501 por padrão. Não defina a porta no arquivo `config.toml`.
-2. **Pacotes incompatíveis**: Certifique-se que o `requirements.txt` não contém pacotes incompatíveis como Kivy, Buildozer ou qualquer dependência específica para Android.
-3. **Imports incorretos**: Verifique se não há imports de módulos que não estão disponíveis no ambiente Streamlit Cloud.
-4. **Segredos (Secrets)**: Configure corretamente os segredos nas configurações do aplicativo no Streamlit Cloud.
-5. **Erros de StreamlitAPIException**: Se aparecer este erro específico, é quase sempre devido a:
-   - **Páginas com nomes idênticos**: Mesmo com arquivos diferentes, o Streamlit pode interpretar como o mesmo nome
-   - **Emojis conflitantes**: Alguns emojis parecem diferentes mas são tratados como iguais pelo Streamlit
-   - **Arquivos ocultos ou temporários**: Arquivos .bak, .old, ou com ~ no diretório pages/
-
-#### Ferramentas de Diagnóstico e Correção
-
-Para executar manualmente a verificação e correção de conflitos:
+1. Em seu computador local, instale as ferramentas do Firebase:
 
 ```bash
-# Verificar apenas (análise sem alterações)
-python check_pages_compatibility.py
+# Instalar globalmente:
+npm install -g firebase-tools
 
-# Verificar e corrigir automaticamente
-python check_pages_compatibility.py --fix
-
-# Verificar, corrigir e mover arquivos conflitantes para diretório seguro
-python check_pages_compatibility.py --fix --move-conflicts
+# Fazer login no Firebase (abrirá um navegador para autenticação):
+firebase login
 ```
 
-#### Dicas para Problemas Específicos
-
-- **Páginas desaparecendo do menu**: Verifique os nomes dos arquivos em busca de conflitos de prefixo numérico
-- **Erros de navegação**: Certifique-se que não há duas páginas com nomes muito semelhantes
-- **Página carrega em branco**: Verifique os logs para identificar erros de importação ou pacotes faltando
-
-### Melhores Práticas para o Streamlit Cloud
-
-1. **Arquivos estáticos**: Coloque arquivos estáticos (imagens, CSS, etc.) nas pastas corretas (`static/`, etc.)
-2. **Segredos**: Nunca inclua credenciais diretamente no código, use sempre o mecanismo de secrets do Streamlit
-3. **Tamanho do repositório**: Mantenha o tamanho do repositório o menor possível, removendo arquivos não necessários
-4. **Versões de pacotes**: Especifique versões precisas das dependências no `requirements.txt`
-
-## Deploy no Firebase Hosting (Estático)
-
-Para deploy de elementos estáticos no Firebase Hosting:
-
-1. Acesse a página "📥 Download Aplicativo" no sistema
-2. Clique em "CONSTRUIR APLICATIVO FIREBASE"
-3. Preencha os detalhes do projeto Firebase
-4. Aguarde a conclusão do processo de build
-5. Siga as instruções exibidas na tela para fazer o deploy
-
-## Deploy do APK Android
-
-Para criar um aplicativo Android:
-
-1. Acesse a página "📥 Download Aplicativo" no sistema
-2. Baixe o pacote `suinocultura_pydroid3_YYYYMMDD.zip`
-3. Siga as instruções no arquivo README dentro do pacote
-
-## Perguntas Frequentes
-
-### O deploy no Streamlit Cloud está falhando com erro de saúde (health check)
-
-Verifique se você removeu a configuração de porta específica do arquivo `.streamlit/config.toml`. O Streamlit Cloud usa a porta 8501 e pode falhar se você tentar definir outra porta.
-
-### Não consigo fazer login no aplicativo após o deploy
-
-Verifique se você configurou corretamente os segredos nas configurações do aplicativo no Streamlit Cloud. Consulte o arquivo `.streamlit/secrets.toml.example` para ver os segredos necessários.
-
-### Alguns recursos não funcionam após o deploy
-
-Verifique os logs do aplicativo no Streamlit Cloud para identificar o problema. Geralmente, isso ocorre devido a dependências ausentes ou incompatíveis.
-
-### Como atualizar meu aplicativo no Streamlit Cloud?
-
-Simplesmente faça push das alterações para o repositório GitHub. O Streamlit Cloud detectará as mudanças e atualizará o aplicativo automaticamente.
-
-### Estou enfrentando erros de navegação ou páginas que não carregam corretamente
-
-Se você está enfrentando problemas como:
-- Páginas que não aparecem no menu lateral
-- Erro "StreamlitAPIException: A page has the same name as a page from another module"
-- Erros de navegação no aplicativo após o deploy
-- Problema com caracteres ou emojis nas páginas
-- Páginas carregando em ordem incorreta
-
-Estes problemas geralmente são causados por conflitos de nomenclatura entre as páginas. O sistema agora inclui uma ferramenta aprimorada para detectar e corrigir esses problemas automaticamente:
-
-#### Ferramenta Avançada de Verificação de Conflitos
-
-O pacote mais recente inclui verificações aprimoradas que:
-
-1. **Detecta emojis similares ou conflitantes**: Identifica emojis que podem parecer diferentes mas são tratados como iguais pelo Streamlit
-2. **Normaliza nomes de arquivos**: Elimina problemas com caracteres especiais e formatação
-3. **Move arquivos conflitantes**: Em vez de apenas renomear, move os arquivos para um diretório de backup para evitar conflitos persistentes
-4. **Analisa similaridade semântica**: Detecta nomes quase idênticos mesmo com diferenças sutis
-5. **Verifica duplicações em metadados**: Busca conflitos nas configurações do arquivo .streamlit/pages.toml
-6. **Detecta arquivos temporários ocultos**: Identifica arquivos de backup criados por editores de código que podem causar conflitos
-7. **Reconhece variações específicas de case**: Identifica conflitos entre arquivos cujos nomes diferem apenas por maiúsculas/minúsculas
-
-#### Como usar a ferramenta manualmente:
+2. Após a autenticação bem-sucedida, você pode gerar um token para usar no Replit:
 
 ```bash
-# Verificar apenas (não altera arquivos)
-python check_pages_compatibility.py
-
-# Verificar e aplicar correções automaticamente
-python check_pages_compatibility.py --fix
-
-# Verificar, corrigir e mover arquivos conflitantes para pages_backup
-python check_pages_compatibility.py --fix --move-conflicts
-
-# Após corrigir, gerar novo pacote de deploy
-python prepare_streamlit_cloud.py
+firebase login:ci
+# Este comando gerará um token que você pode copiar e usar no Replit
 ```
 
-#### Ações corretivas adicionais:
+### Opção 2: Download e desenvolvimento local
 
-- Se os problemas persistirem, use a opção `--move-conflicts` para mover arquivos conflitantes para um diretório de backup
-- Remova manualmente arquivos .bak, .old ou qualquer cópia de backup no diretório pages/
-- Verifique o arquivo `.streamlit/pages.toml` em busca de configurações duplicadas
-- Renomeie páginas com prefixos numéricos garantindo que sejam únicos
+Alternativamente, você pode baixar o pacote completo (ZIP) e realizar todo o processo de deploy em seu ambiente local:
 
-#### Opções avançadas para geração de pacotes de deploy:
+1. Descompacte o arquivo ZIP em seu computador
+2. Instale as ferramentas do Firebase:
 
 ```bash
-# Criar pacote incluindo apenas arquivos modificados desde o último deploy
-python prepare_streamlit_cloud.py --only-modified
-
-# Criar pacote movendo arquivos conflitantes (não renomeando)
-python prepare_streamlit_cloud.py --move-conflicts
-
-# Criar pacote sem executar verificações de compatibilidade
-python prepare_streamlit_cloud.py --skip-adjustments
-
-# Criar pacote apenas com arquivos modificados e movendo conflitos 
-python prepare_streamlit_cloud.py --only-modified --move-conflicts
-
-# Obter ajuda sobre todas as opções disponíveis
-python prepare_streamlit_cloud.py --help
+npm install -g firebase-tools
+firebase login
 ```
 
-> **Importante**: O novo pacote de deploy para Streamlit Cloud já executa todas essas verificações automaticamente, então ao baixar a versão mais recente do pacote de deploy, os problemas de conflitos já estarão resolvidos. A nova opção `--move-conflicts` é especialmente útil quando renomear os arquivos não é suficiente para resolver conflitos persistentes no Streamlit Cloud.
+3. Continue com o processo de deploy conforme as instruções abaixo
+
+**Nota**: O comando `firebase init` não é necessário pois os arquivos de configuração já estão incluídos no pacote.
+
+## Passo 4: Obter Configurações do Firebase
+
+1. No console do Firebase, clique na engrenagem (⚙️) ao lado de "Visão geral do projeto"
+2. Selecione "Configurações do projeto"
+3. Role para baixo até "Seus aplicativos" e clique no ícone da web (</>) para adicionar um app da web
+4. Registre o app com um nome (por exemplo, "suinocultura-web")
+5. Copie o objeto `firebaseConfig` exibido
+
+## Passo 5: Atualizar Arquivo de Configuração
+
+1. Abra o arquivo `build/firebase-config.js` no Replit
+2. Substitua o objeto `firebaseConfig` pelo que você copiou no passo anterior
+
+Exemplo:
+```javascript
+const firebaseConfig = {
+  apiKey: "AIzaSyC1p2MK9qXnSt6_JZpVEUZlVjZxo2QQyQQ",
+  authDomain: "suinocultura-app.firebaseapp.com",
+  projectId: "suinocultura-app",
+  storageBucket: "suinocultura-app.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:abc123def456ghi789jkl",
+  measurementId: "G-ABCDEFGHIJ"
+};
+```
+
+## Passo 6: Atualizar o Arquivo .firebaserc (se necessário)
+
+Se você escolheu um nome diferente para o projeto, atualize o arquivo `.firebaserc`:
+
+```json
+{
+  "projects": {
+    "default": "seu-nome-de-projeto"
+  }
+}
+```
+
+## Passo 7: Executar o Build
+
+1. No Replit, clique no workflow "Firebase Build" ou execute:
+
+```bash
+node build-firebase.js
+```
+
+## Passo 8: Fazer o Deploy
+
+1. Execute o comando para deploy:
+
+```bash
+# Se você fez login com firebase login (ambiente local):
+npx firebase deploy
+
+# OU
+
+# Se você usou firebase login:ci (ambiente Replit/não interativo):
+npx firebase deploy --token "SEU_TOKEN_CI"
+# Substitua SEU_TOKEN_CI pelo token recebido durante o processo de login:ci
+```
+
+2. Após o deploy, você receberá uma URL onde seu site estará disponível (geralmente no formato `https://seu-projeto.web.app`)
+
+## Configuração para Download do APK
+
+O arquivo APK do aplicativo Android é um espaço reservado até que você faça o upload do APK real. Para atualizar:
+
+1. Gere o APK usando a página do desenvolvedor no Sistema Suinocultura
+2. Faça o upload do APK para a pasta `build` substituindo o arquivo `suinocultura.apk`
+3. Execute novamente o deploy:
+
+```bash
+# Com login normal:
+npx firebase deploy
+
+# OU com token CI:
+npx firebase deploy --token "SEU_TOKEN_CI"
+```
+
+## Observações Importantes
+
+- O hosting do Firebase tem um plano gratuito generoso com limites de tráfego
+- Este método de deploy é apenas para o site informativo e download do APK
+- O aplicativo Streamlit principal continuará rodando no Replit em `https://suinocultura.replit.app`
+- Alterações no projeto Replit não são automaticamente sincronizadas com o Firebase
+- Para atualizar o Firebase após alterações, execute novamente o build e o deploy
+
+## Solução de Problemas
+
+### Erro ao fazer login no Firebase
+
+Se você encontrar problemas ao fazer login no Firebase através do Replit, tente usar um token de CI:
+
+```bash
+npx firebase login:ci
+```
+
+Siga as instruções e use o token gerado para autenticação.
+
+### Erro 404 ao tentar baixar o APK
+
+O APK precisa ser manualmente adicionado à pasta `build`. Verifique se o arquivo `suinocultura.apk` está presente antes do deploy.
+
+### Problemas com as configurações do Firebase
+
+Verifique se as credenciais no arquivo `firebase-config.js` estão corretas e correspondem às do seu projeto no console do Firebase.
