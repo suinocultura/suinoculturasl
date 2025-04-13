@@ -191,60 +191,6 @@ def verify_file_changed(token, repo_owner, repo_name, file_path, local_content):
         print(f"Erro ao verificar arquivo {file_path}: {str(e)}")
         return True
 
-def validate_streamlit_cloud_compatibility(temp_dir):
-    """
-    Valida e corrige problemas comuns de compatibilidade com o Streamlit Cloud
-    
-    Args:
-        temp_dir (str): Diretório temporário com os arquivos extraídos
-        
-    Returns:
-        list: Lista de correções aplicadas
-    """
-    fixes_applied = []
-    
-    # Verificar configuração do Streamlit
-    config_file = os.path.join(temp_dir, ".streamlit", "config.toml")
-    if os.path.exists(config_file):
-        with open(config_file, "r") as f:
-            config_content = f.read()
-            
-        # Remover configuração específica de porta se existir
-        if "port =" in config_content:
-            config_content = config_content.replace("port = 5000", "")
-            config_content = config_content.replace("port = 8501", "")
-            
-            with open(config_file, "w") as f:
-                f.write(config_content)
-                
-            fixes_applied.append("Configuração de porta removida para compatibilidade com Streamlit Cloud")
-    
-    # Verificar duplicidade de páginas
-    pages_dir = os.path.join(temp_dir, "pages")
-    if os.path.exists(pages_dir):
-        pages = os.listdir(pages_dir)
-        page_names = [p.split("_", 1)[1] if "_" in p else p for p in pages]
-        duplicates = set([x for x in page_names if page_names.count(x) > 1])
-        
-        if duplicates:
-            fixes_applied.append(f"Atenção: Encontradas páginas com nomes potencialmente conflitantes: {duplicates}")
-    
-    # Garantir que o requirements.txt existe e contém as dependências essenciais
-    req_file = os.path.join(temp_dir, "requirements.txt")
-    required_deps = ["streamlit", "pandas", "numpy", "plotly", "matplotlib"]
-    
-    if os.path.exists(req_file):
-        with open(req_file, "r") as f:
-            req_content = f.read()
-            
-        for dep in required_deps:
-            if dep not in req_content:
-                with open(req_file, "a") as f:
-                    f.write(f"\n{dep}")
-                fixes_applied.append(f"Adicionada dependência obrigatória: {dep}")
-    
-    return fixes_applied
-
 def extract_and_upload_to_github(zip_path, token, repo_owner, repo_name, only_modified=False):
     """
     Extrai os arquivos do pacote ZIP e envia para o GitHub
@@ -271,16 +217,6 @@ def extract_and_upload_to_github(zip_path, token, repo_owner, repo_name, only_mo
         # Extrair ZIP para diretório temporário
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(temp_dir)
-        
-        # Validar e corrigir problemas de compatibilidade com o Streamlit Cloud
-        fixes = validate_streamlit_cloud_compatibility(temp_dir)
-        fixes_messages = []
-        if fixes:
-            print("As seguintes correções foram aplicadas para garantir compatibilidade com o Streamlit Cloud:")
-            for fix in fixes:
-                print(f"- {fix}")
-                fixes_messages.append(fix)
-            print()
         
         # Upload dos arquivos
         for root, dirs, files in os.walk(temp_dir):
@@ -318,15 +254,10 @@ def extract_and_upload_to_github(zip_path, token, repo_owner, repo_name, only_mo
     else:
         skip_msg = ""
     
-    fixes_info = ""
-    if fixes_messages:
-        fixes_info = "\n\nCorreções realizadas para compatibilidade com Streamlit Cloud:\n"
-        fixes_info += "\n".join([f"- {fix}" for fix in fixes_messages])
-    
     if error_count == 0:
-        return True, f"{skip_msg}Todos os {success_count} arquivos foram enviados com sucesso para o GitHub{fixes_info}"
+        return True, f"{skip_msg}Todos os {success_count} arquivos foram enviados com sucesso para o GitHub"
     else:
-        return success_count > 0, f"{skip_msg}{success_count} arquivos enviados com sucesso, {error_count} erros.\nErros: {', '.join(error_messages[:5])}{fixes_info}"
+        return success_count > 0, f"{skip_msg}{success_count} arquivos enviados com sucesso, {error_count} erros.\nErros: {', '.join(error_messages[:5])}"
 
 def deploy_to_github(username=None, token=None, repo_name=None, repo_owner=None, use_saved_credentials=True, only_modified=False):
     """
@@ -390,7 +321,7 @@ def deploy_to_github(username=None, token=None, repo_name=None, repo_owner=None,
         save_github_credentials(username, token, repo_name, repo_owner)
         
         # Gerar link para o Streamlit Cloud
-        streamlit_url = f"https://streamlit.io/deploy?repository={repo_owner}/{repo_name}&branch=main&mainModule=app.py"
+        streamlit_url = f"https://share.streamlit.io/deploy?repository={repo_owner}/{repo_name}&branch=main&mainModule=app.py"
         
         message += f"\n\nDeploye seu aplicativo no Streamlit Cloud: {streamlit_url}"
     
